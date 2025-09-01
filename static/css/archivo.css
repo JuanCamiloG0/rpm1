@@ -1,0 +1,5083 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;1,400&display=swap');
+
+/* ============ Base ============ */
+* {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --header-h: 800px;
+    --footer-h: 80px;
+}
+
+body {
+    background-color: #072237;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 35px 20px 20px;
+    /* padding superior para tu hero */
+    min-height: 100vh;
+}
+
+html,
+body {
+    height: 100% !important;
+    overflow: hidden !important;
+    /* IMPORTANTE: anula tu override anterior */
+    overscroll-behavior: none;
+}
+
+/* 2) El contenido SÍ scrollea aquí, debajo del header */
+.page-scroll {
+    position: relative !important;
+    top: 100px var(--header-h) !important;
+    /* arranca justo debajo del header */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    z-index: 0;
+    /* header queda por encima */
+}
+
+/* 3) Seguridad: evita que algo quede fuera del contenedor y se “cuelen” */
+/* Si por alguna razón tienes contenido fuera de .page-scroll, empújalo */
+main,
+.content-wrapper,
+.content-area,
+#ranking,
+.table-wrap {
+    padding-top: 0 !important;
+    /* sin padding extra */
+    margin-top: -60px !important;
+}
+
+/* 4) Header fijo y transparente (se ve el video detrás) */
+header,
+.header,
+.app-header,
+.site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--header-h);
+    z-index: 2000;
+    background: transparent;
+    border-bottom: 1px solid rgba(255, 255, 255, .25);
+}
+
+/* 5) Video siempre detrás de todo */
+#bg-video,
+.bg-video {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    object-position: center;
+    z-index: -1 !important;
+}
+
+/* Marco exterior (línea blanca) */
+.border-lines {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999;
+}
+
+/* Header fijo y transparente (se ve el video detrás) */
+header,
+.header,
+.app-header,
+.site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--header-h);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: transparent;
+    border-bottom: 1px solid rgba(255, 255, 255, .25);
+}
+
+/* Isologo del header */
+.isologo {
+    width: 80px;
+    height: 80px;
+    margin: 5px;
+    position: relative;
+    top: -4px;
+    left: -5px;
+    z-index: 500;
+}
+
+.isologo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+/* Isologo del header */
+/* Video de fondo */
+.bg-video,
+#bg-video {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: -1;
+    min-width: 100vw;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+#bg-video-mobile {
+    display: none;
+}
+
+.fold-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .45);
+    backdrop-filter: blur(1px);
+    z-index: calc(var(--fm-z) - 1);
+    opacity: 0;
+    transition: opacity var(--fm-speed) ease;
+}
+
+.fold-backdrop.open {
+    opacity: 1;
+}
+
+/* ===== Dropdown de categorías (debajo del header) ===== */
+/* TUNING RÁPIDO */
+:root {
+    /* Posición: se dibuja dentro de .page-scroll; sticky lo deja pegado arriba del contenido */
+    --cats-dd-offset-x: 0px;
+    /* mueve horizontalmente todo el bloque */
+    --cats-dd-offset-y: 0px;
+    /* si quieres bajarlo un poquito más del inicio del contenido */
+    --cats-dd-maxw: 280px;
+    /* ancho máximo del menú */
+    --cats-dd-z: 5001;
+    /* por encima del contenido normal, debajo del header si hace falta */
+    /* Botón */
+    --cats-btn-bg: rgba(7, 34, 55, .86);
+    --cats-btn-color: #fff;
+    --cats-btn-border: 1px solid rgba(255, 255, 255, .18);
+    --cats-btn-radius: 10px;
+    --cats-btn-pad-y: 10px;
+    --cats-btn-pad-x: 14px;
+    --cats-btn-font: 0.95rem;
+    --cats-btn-shadow: 0 6px 18px rgba(0, 0, 0, .25);
+    /* Menú */
+    --cats-menu-bg: rgba(7, 34, 55, .98);
+    --cats-menu-color: #fff;
+    --cats-menu-border: 1px solid rgba(255, 255, 255, .18);
+    --cats-menu-radius: 14px;
+    --cats-menu-shadow: 0 16px 36px rgba(0, 0, 0, .45);
+    --cats-item-hover: rgba(255, 255, 255, .08);
+    --cats-item-active: #4ac99922;
+    /* leve indicación si es la activa */
+}
+
+/* Contenedor pegado al tope de .page-scroll, alineado a la derecha */
+.cats-dropdown-wrap {
+    position: sticky;
+    top: 0;
+    /* queda justo donde arranca el contenido (debajo del header fijo) */
+    z-index: var(--cats-dd-z);
+    display: flex;
+    justify-content: flex-end;
+    /* alinea a la derecha (debajo de la lupa) */
+    padding: 8px 10px;
+    /* pequeño aire */
+    transform: translate(var(--cats-dd-offset-x), var(--cats-dd-offset-y));
+}
+
+/* Botón disparador */
+.cats-trigger {
+    background: var(--cats-btn-bg);
+    color: var(--cats-btn-color);
+    border: var(--cats-btn-border);
+    border-radius: var(--cats-btn-radius);
+    padding: var(--cats-btn-pad-y) var(--cats-btn-pad-x);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: var(--cats-btn-font);
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: var(--cats-btn-shadow);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+}
+
+.cats-trigger:focus-visible {
+    outline: 2px solid #4ac999;
+    outline-offset: 2px;
+}
+
+.cats-trigger-text {
+    white-space: nowrap;
+}
+
+/* Chevron rota cuando está abierto */
+.cats-trigger[aria-expanded="true"] .cats-chevron {
+    transform: rotate(180deg);
+}
+
+.cats-chevron {
+    transition: transform .2s ease;
+    opacity: .92;
+}
+
+/* Lista del menú */
+.cats-menu {
+    position: absolute;
+    margin-top: 8px;
+    right: 10px;
+    /* alineado al borde derecho del botón */
+    max-width: var(--cats-dd-maxw);
+    min-width: 80px !important;
+    background: var(--cats-menu-bg);
+    color: var(--cats-menu-color);
+    border: var(--cats-menu-border);
+    border-radius: var(--cats-menu-radius);
+    box-shadow: var(--cats-menu-shadow);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    list-style: none;
+    padding: 8px;
+    display: none;
+    /* hidden por defecto */
+}
+
+.cats-menu.open {
+    display: block;
+}
+
+.cats-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 10px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: inherit;
+    transition: background-color .15s ease, transform .06s ease;
+}
+
+.cats-item:hover {
+    background: var(--cats-item-hover);
+}
+
+.cats-item:active {
+    transform: scale(.995);
+}
+
+.cats-item.active {
+    background: var(--cats-item-active);
+    border: 1px solid #4ac99955;
+}
+
+.cats-item-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    display: block;
+    border-radius: 4px;
+}
+
+/* Responsivo pequeño: que el menú no se salga */
+@media (max-width: 480px) {
+    .cats-menu {
+        right: 6px;
+        min-width: 70%;
+    }
+}
+
+.cats-menu {
+    background: rgba(7, 34, 55, 0);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    position: relative;
+    right: -4px;
+    top: 4px;
+}
+
+.table-search-box input {
+    width: 35%;
+    height: 2px;
+    padding: 12px 40px 10px 6px;
+    border-radius: 5px;
+    border: 1px solid rgba(255, 255, 255, .25);
+    background: rgba(255, 255, 255, .1);
+    /* transparente inicial */
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: #fff;
+    font-size: 16px;
+    outline: none;
+    transition: background .25s ease, color .25s ease, border-color .25s ease;
+    position: absolute;
+    top: 190px;
+    left: 190px;
+    z-index: 5000;
+}
+
+.table-search-box input::placeholder {
+    color: rgba(255, 255, 255, .6);
+}
+
+/* Cambia a blanco SOLO en foco o cuando tenga texto */
+.table-search-box input:focus,
+.table-search-box input.has-text {
+    background: #fff !important;
+    color: #111 !important;
+    border-color: #4ac999;
+}
+
+.table-search-box input:focus::placeholder,
+.table-search-box input.has-text::placeholder {
+    color: #666 !important;
+}
+
+.cats-trigger {
+    background: rgba(7, 34, 55, 0);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    position: absolute;
+    right: 10px;
+    top: 20px;
+}
+
+.rank-head {
+    position: sticky !important;
+    top: 0;
+    /* pegado al tope DEL SCROLLER (.table-viewport) */
+    z-index: 3;
+    display: grid;
+    /* Ajusta estos anchos para calzar con tus columnas reales */
+    grid-template-columns: 12% 38% 10% 20% 20%;
+    align-items: center;
+    gap: 0;
+    padding: 12px 15px 10px;
+    /* mismo padding que th/td */
+    color: #fff;
+    background: transparent;
+    /* se ve el video */
+    border-bottom: 1px solid rgba(255, 255, 255, .25);
+    pointer-events: none;
+    /* no bloquea scroll ni clics en filas */
+}
+
+/* Tipografía como tus TH */
+.rank-head .cell {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.social-icons {
+    position: fixed;
+    top: 20px;
+    right: 30px;
+    display: flex;
+    gap: 25px;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    z-index: 1001;
+}
+
+.social-link.instagram {
+    position: fixed;
+    top: 15px;
+    right: 60px;
+}
+
+.social-link.whatsapp {
+    position: fixed;
+    top: 16px;
+    right: 10px;
+}
+
+.social-icon {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    transition: transform .2s ease;
+}
+
+.social-icon:hover {
+    transform: scale(1.1);
+}
+
+/* Hero */
+.logo {
+    width: 350px;
+    height: auto;
+    margin: -15px auto 20px;
+}
+
+.title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin: 0 auto 20px;
+    max-width: 600px;
+    line-height: 1.2;
+    position: relative;
+    top: -250px !important;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    font-weight: 250;
+    margin: 0 auto;
+    max-width: 600px;
+    line-height: 1.2;
+    color: rgba(255, 255, 255, .8);
+    position: relative;
+    top: 300px;
+}
+
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+}
+
+/* CTA central */
+.catego {
+    position: relative;
+    top: 30px;
+}
+
+.scroll-button {
+    font-weight: 600;
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #4ac999;
+    border: none;
+    border-radius: 25px;
+    padding: 15px 100px;
+    color: #000;
+    font-size: 16px;
+    cursor: pointer;
+    z-index: 1100;
+    transition: background-color .3s ease, transform .15s ease;
+    text-decoration: none;
+}
+
+.scroll-button:hover,
+.scroll-button:focus-visible {
+    background-color: #3fb98b;
+    outline: none;
+}
+
+.scroll-button:active {
+    transform: translateX(-50%) scale(.98);
+}
+
+/* ====== Footer KPI ====== */
+.kpi-footer {
+    background: rgba(0, 53, 73, .94);
+    color: #fff;
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+    box-shadow: 0 -6px 24px rgba(0, 0, 0, .45), inset 0 1px rgba(255, 255, 255, .06);
+}
+
+/* 3 KPIs + CTA (desktop) */
+.kpi-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) auto;
+    align-items: center;
+    text-align: center;
+    gap: 24px;
+    padding: 16px 18px;
+    font-weight: 700;
+}
+
+/* KPIs al costado del otro (los de 2 items que me pediste) */
+.kpi-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+    flex-wrap: nowrap;
+}
+
+.kpi-row .kpi {
+    flex: 0 1 48%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 0;
+}
+
+.kpi-row .kpi-text {
+    text-align: center;
+    line-height: 1.15;
+}
+
+.kpi-number {
+    position: relative;
+    font-size: 1.9rem;
+    font-weight: 900;
+    letter-spacing: .4px;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 1px 0 #4a5252, 0 2px 6px rgba(0, 0, 0, .55), 0 0 14px #656969;
+    filter: drop-shadow(0 8px 22px rgba(0, 0, 0, .45));
+    left: -5px;
+}
+
+.kpi-label {
+    font-size: .95rem;
+    font-weight: 700;
+    opacity: .95;
+}
+
+.kpi-text {
+    font-size: 1.05rem;
+    font-weight: 800;
+}
+
+/* WhatsApp CTA */
+.wa-cta {
+    text-decoration: none;
+}
+
+.wa-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #25D366;
+    padding: 6px;
+    border-radius: 9999px;
+    border: 2px solid rgba(255, 255, 255, .75);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, .35), inset 0 1px rgba(255, 255, 255, .25);
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.wa-btn:hover,
+.wa-btn:focus-visible {
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, .4);
+    outline: none;
+}
+
+.wa-btn:active {
+    transform: translateY(0) scale(.99);
+}
+
+.wa-img {
+    width: 36px;
+    height: 36px;
+    display: block;
+    object-fit: contain;
+    border-radius: 9999px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .25);
+}
+
+.wa-img--bubble {
+    padding: 6px;
+    background: #19b858;
+    border: 3px solid #fff;
+}
+
+.wa-label {
+    background: #fff;
+    color: #0e3a2f;
+    font-weight: 800;
+    font-size: .95rem;
+    padding: 8px 14px;
+    border-radius: 9999px;
+    white-space: nowrap;
+}
+
+.cta-cell {
+    justify-self: end;
+}
+
+.cta-cell.scale-90 {
+    transform: scale(.7);
+    transform-origin: right bottom;
+}
+
+/* ====== Tabla / Ranking ====== */
+table {
+    margin: 20px auto;
+    border-collapse: collapse;
+    width: 80%;
+}
+
+th,
+td {
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, .2);
+    text-align: center;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+th {
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+th.cat {
+    background-color: #4ac999;
+    color: #fff;
+}
+
+td.cat-rpm {
+    background-color: #4ac999;
+    font-weight: bold;
+    color: #fff;
+}
+
+.arrow-up {
+    color: #00ff88;
+    font-weight: bold;
+}
+
+.arrow-down {
+    color: #ff4444;
+    font-weight: bold;
+}
+
+.arrow-right {
+    color: #cccccc;
+    font-weight: bold;
+}
+
+td.act {
+    text-align: center;
+    width: 56px;
+}
+
+td.act .arrow-up,
+td.act .arrow-down,
+td.act .arrow-right {
+    font-size: 16px;
+    line-height: 1;
+    display: inline-block;
+}
+
+#ranking {
+    min-width: 760px;
+    width: 100%;
+}
+
+.table-wrap {
+    width: min(100%, 1100px);
+    margin: 90px auto 20px;
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    box-shadow: none !important;
+    filter: none !important;
+    background: none !important;
+    background-image: none !important;
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+}
+
+.table-wrap::before,
+.table-wrap::after {
+    content: none !important;
+    display: none !important;
+}
+
+/* Oculta columna 3 (GÉNERO) en ranking */
+#ranking th:nth-child(3),
+#ranking td:nth-child(3) {
+    display: none !important;
+}
+
+/* Icono de categoría (imagen) */
+.cat-chip .cat-icon {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    display: block;
+    border-radius: 6px;
+}
+
+.cat-chip i {
+    font-size: 20px;
+    line-height: 1;
+}
+
+/* ====== Offcanvas por encima del header ====== */
+.offcanvas,
+.offcanvas.offcanvas-top {
+    z-index: 3005 !important;
+}
+
+.offcanvas-backdrop {
+    z-index: 3004 !important;
+}
+
+/* ====== Contenedor que scrollea bajo el header (si lo usas) ====== */
+.page-scroll {
+    position: fixed;
+    top: var(--header-h);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    z-index: 0;
+}
+
+/* Quita cualquier máscara global que genere fades no deseados */
+* {
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+}
+
+/* ============ Responsive generales ============ */
+@media (max-width: 640px) {
+    .kpi-wrap {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .cta-cell {
+        justify-self: center;
+    }
+
+    .wa-label {
+        font-size: .9rem;
+        padding: 7px 12px;
+    }
+}
+
+.bg-video {
+    object-fit: cover;
+    object-position: center;
+    min-width: 100vw;
+    min-height: 100vh;
+}
+
+/* Más pequeños aún */
+@media (max-width: 380px) {
+    .wa-label {
+        font-size: .9rem;
+        padding: 7px 12px;
+    }
+}
+
+@media(max-width: 360px) and (orientation: portrait) {
+    #ranking {
+        font-size: .9rem;
+    }
+
+    th,
+    td {
+        padding: 6px 7px;
+    }
+
+    .logo {
+        width: 200px;
+    }
+
+    .scroll-button {
+        padding: 11px 32px;
+    }
+}
+
+/* From Uiverse.io by Gaurang7717 */
+.Btn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 45px;
+    height: 45px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition-duration: 0.3s;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+    background-color: #00d757;
+    left: 110px;
+    top: 100px;
+}
+
+.sign {
+    width: 100%;
+    transition-duration: 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sign svg {
+    width: 25px;
+}
+
+.sign svg path {
+    fill: white;
+    z-index: 999;
+}
+
+.text {
+    position: absolute;
+    right: 0%;
+    width: 0%;
+    opacity: 0;
+    color: #333;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition-duration: 0.3s;
+    z-index: 900;
+}
+
+.Btn:hover {
+    width: 150px;
+    border-radius: 40px;
+    transition-duration: 0.3s;
+}
+
+.Btn:hover .sign {
+    width: 30%;
+    transition-duration: 0.3s;
+    padding-left: 0px;
+}
+
+.Btn:hover .text {
+    opacity: 1;
+    width: 70%;
+    transition-duration: 0.3s;
+    padding-right: 10px;
+}
+
+.Btn:active {
+    transform: translate(2px, 2px);
+}
+
+/* variables auxiliares para el cálculo */
+.Btn {
+    --w-colapsado: 45px;
+    --w-expandido: 150px;
+    --desplazamiento: calc(var(--w-expandido) - var(--w-colapsado));
+    will-change: width, transform;
+}
+
+/* ABRIR hacia la IZQUIERDA */
+.Btn:hover {
+    width: var(--w-expandido);
+    border-radius: 40px;
+    /* mueve el botón a la izquierda el mismo delta que creció */
+    transform: translateX(calc(-1 * var(--desplazamiento)));
+}
+
+/* Mantén tus ajustes internos al hacer hover */
+.Btn:hover .sign {
+    width: 30%;
+    padding-left: 10px;
+}
+
+.Btn:hover .text {
+    opacity: 1;
+    width: 70%;
+    padding-right: 10px;
+}
+
+/* click: compón el pequeño “tap” sin perder el corrimiento */
+.Btn:active {
+    transform: translateX(calc(-1 * var(--desplazamiento))) translate(2px, 2px);
+}
+
+/* --- Suaviza el texto del botón: sin reflow --- */
+.text {
+    position: absolute;
+    right: 12px;
+    /* no animes width: usa tamaño natural */
+    width: auto !important;
+    white-space: nowrap;
+    /* animación suave sin relayout */
+    opacity: 0;
+    transform: translateX(px) scaleX(.96);
+    transform-origin: right center;
+    transition: opacity .18s ease, transform .28s ease;
+    /* antialias + evita parpadeos */
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+}
+
+.Btn:hover .text {
+    opacity: 1;
+    transform: translateX(0) scaleX(1);
+}
+
+/* Opcional: deja fija el área del ícono para más estabilidad */
+.sign {
+    flex: 0 0 45px;
+    /* ancho estable para el ícono */
+    min-width: 45px;
+    justify-content: center;
+}
+
+/* Mantén tu apertura hacia la izquierda (de tu mensaje anterior) */
+.Btn {
+    --w-colapsado: 45px;
+    --w-expandido: 220px;
+    --desplazamiento: calc(var(--w-expandido) - var(--w-colapsado));
+    will-change: width, transform;
+}
+
+.Btn:hover {
+    width: var(--w-expandido);
+    border-radius: 40px;
+    transform: translateX(calc(-1 * var(--desplazamiento)));
+}
+
+.Btn:active {
+    transform: translateX(calc(-1 * var(--desplazamiento))) translate(2px, 2px);
+}
+
+/* Recorta el espacio bajo el header SIN tocar tu layout */
+:root {
+    --header-h: 72px;
+    /* deja tu altura real */
+    --trim-gap: 12px;
+    /* cuánto quieres recortar (8–16px suele ir bien) */
+}
+
+/* Si usas contenedor que scrollea bajo el header */
+.page-scroll {
+    top: calc(var(--header-h) - var(--trim-gap)) !important;
+}
+
+/* Si tu contenido no está en .page-scroll, empuja menos con padding-top */
+main,
+.content-wrapper,
+.content-area,
+#ranking,
+.table-wrap {
+    padding-top: calc(var(--header-h) - var(--trim-gap)) !important;
+}
+
+/* (Opcional) si el <body> tiene padding-top grande, compénsalo un poco en la home */
+body.home,
+body.principal {
+    padding-top: calc(35px - var(--trim-gap)) !important;
+    /* 35px era el tuyo */
+}
+
+.menu-btn {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+}
+
+.menu-btn .icon {
+    display: block;
+}
+
+.menu-btn .icon-close {
+    display: none;
+}
+
+/* Al abrir: se muestra la X y se oculta la hamburguesa */
+.menu-btn.is-open .icon-burger {
+    display: none;
+}
+
+.menu-btn.is-open .icon-close {
+    display: block;
+}
+
+/* Utilidad para lectores de pantalla */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.main-nav {
+    position: relative;
+    left: 2px !important;
+}
+
+.logo1 {
+    width: 110px;
+    height: 110px;
+    margin: 5px;
+    position: fixed;
+    top: 5px;
+    left: 620px;
+    z-index: 600;
+}
+
+.logo1 img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+
+}
+
+.main-nav {
+    position: fixed;
+    top: 6px;
+    left: 90px;
+    display: flex;
+    gap: 10px;
+    z-index: 1001
+}
+
+.nav-btn {
+    padding: 6px 12px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, .15);
+    border: 1px solid rgba(255, 255, 255, .25);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 800;
+    letter-spacing: .2px;
+    cursor: pointer;
+    transition: .15s
+}
+
+.nav-btn:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, .22)
+}
+
+/* Sidebar izquierdo */
+.lbackdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .45);
+    opacity: 0;
+    pointer-events: none;
+    transition: .2s;
+    z-index: 1001
+}
+
+.lbackdrop.open {
+    opacity: 1;
+    pointer-events: auto
+}
+
+.lside {
+    position: fixed;
+    top: 57px;
+    left: 0;
+    height: calc(100% - 57px);
+    width: min(92vw, 320px);
+    background: rgba(7, 34, 55, 0);
+    /* un azul oscuro con 65% opacidad */
+    backdrop-filter: blur(10px);
+    /* desenfoque del contenido detrás */
+    -webkit-backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(255, 255, 255, .2);
+    transform: translateX(-100%);
+    transition: .25s;
+    z-index: 5002;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    top: 73px;
+}
+
+.lside.open {
+    transform: translateX(0)
+}
+
+.lside-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, .15)
+}
+
+.lside-body {
+    padding: 14px;
+    overflow: auto
+}
+
+.rank-list {
+    display: grid;
+    gap: 10px
+}
+
+.rank-chip {
+    display: block;
+    text-align: left;
+    padding: 12px 14px;
+    border-radius: 14px;
+    font-weight: 900;
+    letter-spacing: .2px;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, .25);
+    transition: .15s
+}
+
+.rank-chip.active {
+    background: #4ac999;
+    color: #000;
+    border-color: #bff1df;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, .35), 0 0 0 2px rgba(74, 201, 153, .35) inset
+}
+
+.rank-chip.inactive {
+    background: #fff;
+    color: #0a2237;
+    border-color: rgba(255, 255, 255, .75)
+}
+
+.rank-chip.inactive:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, .25)
+}
+
+/* Botón Categorías (header derecho) */
+.rcat-nav {
+    position: fixed;
+    top: 10px;
+    right: 12px;
+    z-index: 1005
+}
+
+.rcat-btn {
+    padding: 8px 12px;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, .25);
+    background: rgba(255, 255, 255, .15);
+    color: #fff;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer
+}
+
+.rcat-btn:hover {
+    background: rgba(255, 255, 255, .22)
+}
+
+/* Sidebar derecho categorías */
+.rbackdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .45);
+    opacity: 0;
+    pointer-events: none;
+    transition: .2s;
+    z-index: 1003
+}
+
+.rbackdrop.open {
+    opacity: 1;
+    pointer-events: auto
+}
+
+.rside {
+    position: fixed;
+    top: 57px;
+    right: 0;
+    height: calc(100% - 57px);
+    width: min(92vw, 320px);
+    background: rgba(0, 53, 73, .96);
+    border-left: 1px solid rgba(255, 255, 255, .2);
+    transform: translateX(100%);
+    transition: .25s;
+    z-index: 1004;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    color: #fff
+}
+
+.rside.open {
+    transform: translateX(0)
+}
+
+.rside-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, .15)
+}
+
+.rside-body {
+    padding: 14px;
+    overflow: auto
+}
+
+.cat-list {
+    display: grid;
+    gap: 10px
+}
+
+.cat-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: #fff;
+    color: #0a2237;
+    border: 1px solid rgba(255, 255, 255, .25);
+    font-weight: 900;
+    letter-spacing: .2px;
+    transition: .15s
+}
+
+.cat-chip:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, .25)
+}
+
+.cat-chip.active {
+    background: #4ac999;
+    color: #000;
+    border-color: #bff1df;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, .35), 0 0 0 2px rgba(74, 201, 153, .35) inset
+}
+
+.cat-chip img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain
+}
+
+/* Tabla + búsqueda */
+.toolbar {
+    width: min(100%, 1100px);
+    margin: 80px auto 8px;
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 8px
+}
+
+.rank-search {
+    position: relative;
+}
+
+.rank-search input {
+    background: rgba(255, 255, 255, .14);
+    border: 1px solid rgba(255, 255, 255, .28);
+    color: #fff;
+    border-radius: 12px;
+    padding: 8px 12px;
+    min-width: 220px;
+    outline: none
+}
+
+.rank-search input::placeholder {
+    color: rgba(255, 255, 255, .8)
+}
+
+.table-wrap {
+    width: min(100%, 1100px);
+    margin: 6px auto 20px;
+    overflow-x: auto
+}
+
+#ranking {
+    width: 100%
+}
+
+td.act {
+    text-align: center;
+    width: 56px
+}
+
+td.act .arrow-up,
+td.act .arrow-down,
+td.act .arrow-right {
+    font-size: 16px;
+    display: inline-block;
+    line-height: 1
+}
+
+@media (max-width:600px) {
+    .main-nav {
+        left: 70px;
+        gap: 6px
+    }
+
+    .nav-btn {
+        padding: 6px 10px;
+        font-size: .9rem
+    }
+
+    .toolbar {
+        justify-content: center;
+        margin: 74px auto 6px
+    }
+
+    .rank-search input {
+        min-width: 180px
+    }
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    /* lo empuja al fondo del sidebar */
+    padding: 12px 37.5px;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-align: left;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    position: absolute;
+    top: 485px;
+}
+
+/* From Uiverse.io by Gaurang7717 */
+.Btn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 45px;
+    height: 45px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition-duration: 0.3s;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+    background-color: #00d757;
+    left: 1290px;
+    top: 10px;
+}
+
+.sign {
+    width: 100%;
+    transition-duration: 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sign svg {
+    width: 25px;
+}
+
+.sign svg path {
+    fill: white;
+    z-index: 999;
+}
+
+.text {
+    position: absolute;
+    right: 0%;
+    width: 0%;
+    opacity: 0;
+    color: #333;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition-duration: 0.3s;
+    z-index: 900;
+}
+
+.Btn:hover {
+    width: 150px;
+    border-radius: 40px;
+    transition-duration: 0.3s;
+}
+
+.Btn:hover .sign {
+    width: 30%;
+    transition-duration: 0.3s;
+    padding-left: 0px;
+}
+
+.Btn:hover .text {
+    opacity: 1;
+    width: 70%;
+    transition-duration: 0.3s;
+    padding-right: 10px;
+}
+
+.Btn:active {
+    transform: translate(2px, 2px);
+}
+
+/* variables auxiliares para el cálculo */
+.Btn {
+    --w-colapsado: 45px;
+    --w-expandido: 150px;
+    --desplazamiento: calc(var(--w-expandido) - var(--w-colapsado));
+    will-change: width, transform;
+}
+
+/* ABRIR hacia la IZQUIERDA */
+.Btn:hover {
+    width: var(--w-expandido);
+    border-radius: 40px;
+    /* mueve el botón a la izquierda el mismo delta que creció */
+    transform: translateX(calc(-1 * var(--desplazamiento)));
+}
+
+/* Mantén tus ajustes internos al hacer hover */
+.Btn:hover .sign {
+    width: 30%;
+    padding-left: 10px;
+}
+
+.Btn:hover .text {
+    opacity: 1;
+    width: 70%;
+    padding-right: 10px;
+}
+
+/* click: compón el pequeño “tap” sin perder el corrimiento */
+.Btn:active {
+    transform: translateX(calc(-1 * var(--desplazamiento))) translate(2px, 2px);
+}
+
+/* --- Suaviza el texto del botón: sin reflow --- */
+.text {
+    position: absolute;
+    right: 12px;
+    /* no animes width: usa tamaño natural */
+    width: auto !important;
+    white-space: nowrap;
+    /* animación suave sin relayout */
+    opacity: 0;
+    transform: translateX(px) scaleX(.96);
+    transform-origin: right center;
+    transition: opacity .18s ease, transform .28s ease;
+    /* antialias + evita parpadeos */
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+}
+
+.Btn:hover .text {
+    opacity: 1;
+    transform: translateX(0) scaleX(1);
+}
+
+/* Opcional: deja fija el área del ícono para más estabilidad */
+.sign {
+    flex: 0 0 45px;
+    /* ancho estable para el ícono */
+    min-width: 45px;
+    justify-content: center;
+}
+
+/* Mantén tu apertura hacia la izquierda (de tu mensaje anterior) */
+.Btn {
+    --w-colapsado: 45px;
+    --w-expandido: 220px;
+    --desplazamiento: calc(var(--w-expandido) - var(--w-colapsado));
+    will-change: width, transform;
+}
+
+.Btn:hover {
+    width: var(--w-expandido);
+    border-radius: 40px;
+    transform: translateX(calc(-1 * var(--desplazamiento)));
+}
+
+.Btn:active {
+    transform: translateX(calc(-1 * var(--desplazamiento))) translate(2px, 2px);
+}
+
+/* Recorta el espacio bajo el header SIN tocar tu layout */
+:root {
+    --header-h: 72px;
+    /* deja tu altura real */
+    --trim-gap: 12px;
+    /* cuánto quieres recortar (8–16px suele ir bien) */
+}
+
+/* Si usas contenedor que scrollea bajo el header */
+.page-scroll {
+    top: calc(var(--header-h) - var(--trim-gap)) !important;
+}
+
+/* Si tu contenido no está en .page-scroll, empuja menos con padding-top */
+main,
+.content-wrapper,
+.content-area,
+#ranking,
+.table-wrap {
+    padding-top: calc(var(--header-h) - var(--trim-gap)) !important;
+}
+
+/* (Opcional) si el <body> tiene padding-top grande, compénsalo un poco en la home */
+body.home,
+body.principal {
+    padding-top: calc(35px - var(--trim-gap)) !important;
+    /* 35px era el tuyo */
+}
+
+@media (min-width: 641px),
+(orientation: landscape) and (min-aspect-ratio: 16/9) {
+
+    /* Usar el THEAD real en PC (deja de ser transparente) */
+    table[aria-labelledby="rank-head"] thead th {
+        color: #fff !important;
+        background: rgba(7, 34, 55, .96) !important;
+        border-color: rgba(255, 255, 255, .25) !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+    }
+
+    /* Ocultar el overlay .rank-head en PC (no lo necesitamos) */
+    .rank-head {
+        display: none !important;
+    }
+
+    /* Volver a scroll normal en PC (ese bloque lo anulaba) */
+    html,
+    body {
+        overflow: auto !important;
+        height: auto !important;
+    }
+
+    .page-scroll,
+    main,
+    .content-wrapper,
+    .content-area {
+        overflow-y: visible !important;
+        overscroll-behavior: auto !important;
+        touch-action: auto !important;
+    }
+
+    /* Viewport/wrap sin recortes extra (el bloque móvil los forzaba) */
+    .table-wrap {
+        overflow: visible !important;
+        position: relative;
+    }
+
+    .table-viewport {
+        height: auto !important;
+        max-height: none !important;
+        overflow-y: auto !important;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    /* THEAD sticky legible en PC */
+    #ranking {
+        border-collapse: separate !important;
+        border-spacing: 0;
+    }
+
+    #ranking thead th {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        background: rgba(7, 34, 55, .96) !important;
+        box-shadow: none !important;
+    }
+
+    #ranking thead th::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -1px;
+        height: 1px;
+        background: rgba(255, 255, 255, .25);
+        pointer-events: none;
+    }
+
+    /* Si usas .rh-row en PC, proporciones cómodas (no obligatorio) */
+    .rh-row {
+        grid-template-columns: 10% 40% 12% 20% 18%;
+    }
+}
+h2 {
+    position: absolute;
+    font-size: 2.2rem;
+    top: 120px;
+    left: 520px;
+    color: #ffffff;
+}
+#ranking td.pos-cell {
+    position: relative;
+    /* crea el contexto para el ::before */
+    z-index: 0;
+    /* el contenido queda por encima del ::before -1 */
+    font-weight: 800;
+    color: #fff;
+    text-align: center;
+    overflow: hidden;
+}
+
+/* Colores TOP 3 */
+#ranking td.pos-1 {
+    --pos-bg: lch(86.66% 59.61 159.86 / 0.973);
+}
+
+#ranking td.pos-2 {
+    --pos-bg: hwb(162 25% 6%);
+}
+
+#ranking td.pos-3 {
+    --pos-bg: hsla(163, 54%, 59%, 0.774);
+}
+
+/* Bloque de color detrás del número */
+#ranking td.pos-cell::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--pos-bg, transparent);
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, .10), rgba(0, 0, 0, .08));
+    z-index: -1;
+    /* <— CLAVE: va detrás del contenido */
+    pointer-events: none;
+    /* no bloquea clics/selección */
+}
+
+/* ===== Celda POS: base ===== */
+#ranking td.pos-cell {
+    position: relative;
+    z-index: 0;
+    /* contenido arriba del ::before */
+    font-weight: 800;
+    color: #fff;
+    text-align: center;
+    /* ajusta a left si prefieres */
+    overflow: hidden;
+}
+
+#ranking td.pos-cell::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    /* como tu diseño */
+    z-index: -1;
+    /* detrás del número */
+    background: transparent;
+    /* se setea por clase */
+    pointer-events: none;
+    /* leve brillo para “tarjeta” */
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, .08), rgba(0, 0, 0, .10));
+}
+
+/* ===== Masculino / Femenino: TOP 3 fijos ===== */
+#ranking td.pos-cell.pos-1:not(.pos-grad)::before {
+    background: #4ac999;
+}
+
+#ranking td.pos-cell.pos-2:not(.pos-grad)::before {
+    background: #4ac998a8;
+}
+
+#ranking td.pos-cell.pos-3:not(.pos-grad)::before {
+    background: #4ac99865;
+}
+
+/* ===== General: TOP 10 con degradado desde #4ac999 ===== */
+/* Usamos HSL con alpha decreciente: más intenso en 1°, más suave en 10° */
+:root {
+    /* #4ac999 ≈ hsl(160, 53%, 54%) */
+    --g-h: 160;
+    --g-s: 53%;
+    --g-l: 54%;
+}
+
+#ranking td.pos-cell.pos-grad::before {
+    background: hsl(var(--g-h) var(--g-s) var(--g-l) / var(--g-a, 1));
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, .08), rgba(0, 0, 0, .10));
+}
+
+/* Intensidades para 1..10 (ajústalas a gusto) */
+#ranking td.pos-grad.pos-1::before {
+    --g-a: 1.00;
+}
+
+#ranking td.pos-grad.pos-2::before {
+    --g-a: 0.85;
+}
+
+#ranking td.pos-grad.pos-3::before {
+    --g-a: 0.72;
+}
+
+#ranking td.pos-grad.pos-4::before {
+    --g-a: 0.62;
+}
+
+#ranking td.pos-grad.pos-5::before {
+    --g-a: 0.55;
+}
+
+#ranking td.pos-grad.pos-6::before {
+    --g-a: 0.46;
+}
+
+#ranking td.pos-grad.pos-7::before {
+    --g-a: 0.34;
+}
+
+#ranking td.pos-grad.pos-8::before {
+    --g-a: 0.28;
+}
+
+#ranking td.pos-grad.pos-9::before {
+    --g-a: 0.22;
+}
+
+#ranking td.pos-grad.pos-10::before {
+    --g-a: 0.16;
+}
+/* Base: los gradientes hasta top 10 (ya lo tienes definido) */
+/* Después del top 10 → sin color (o fondo oscuro) */
+#ranking td.pos-grad:not(.pos-1):not(.pos-2):not(.pos-3):not(.pos-4):not(.pos-5):not(.pos-6):not(.pos-7):not(.pos-8):not(.pos-9):not(.pos-10)::before {
+    background: #11111136 !important;
+    /* o #000 si prefieres más fuerte */
+    background-image: none !important;
+    /* evita la transparencia verde */
+}
+
+/* PC — un solo scroll (de página) */
+
+
+    html,
+    body {
+        overflow: auto !important;
+        height: auto !important;
+    }
+    
+    /* El contenedor de contenido no debe ser fixed ni tener scroll propio */
+    .page-scroll {
+        position: static !important;
+        top: auto !important;
+        bottom: auto !important;
+        overflow: visible !important;
+    }
+
+    /* La tabla NO scrollea en vertical, solo puede scrollear en X si hace falta */
+    .table-wrap {
+        overflow: visible !important;
+    }
+
+    .table-viewport {
+        height: auto !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+        overflow-x: auto;
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+#ranking {
+    border-collapse: separate !important;
+    border-spacing: 0;
+}
+
+#ranking thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+#ranking thead th::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 1px;
+    background: rgba(255, 255, 255, .25);
+    pointer-events: none;
+}
+
+/* 6) Extra anti-“rebote” al llegar arriba/abajo en móviles */
+.table-viewport::-webkit-scrollbar-thumb {
+    background-clip: padding-box;
+}
+
+.table-wrap #dos {
+    position: absolute !important;
+    left: 15px !important;
+    top: 450px !important;
+    
+}
+
+.table-viewport {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    /* “sube” el contenido para que quede oculto arriba */
+    margin-top: -50px !important;
+    /* recorta 30px por arriba */
+    padding-top: 20px;
+    /* compensas para que no tape la primera fila */
+}
+
+.rh-row {
+    top: 20px !important;
+}
+
+:root {
+    --rh-h: 48px;
+}
+
+/* El bloque .rank-head se dibuja por encima, sin empujar layout */
+.rank-head {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--rh-h);
+    z-index: 3;
+    /* por encima de las filas */
+    background: transparent;
+    /* sigue viéndose el fondo/video */
+    pointer-events: none;
+    /* no bloquea clics en las filas */
+}
+
+/* Fila/títulos dentro del overlay */
+.rank-head .rh-row {
+    display: grid;
+    /* usa tu misma distribución de columnas para calzar 1:1 */
+    grid-template-columns: 11% 36% 8% 25% 15%;
+    align-items: center;
+    height: 100%;
+    padding: 0 8px;
+    font-size: 14px;
+    letter-spacing: 1px;
+    color: #fff;
+    position: relative;
+}
+
+/* Línea inferior fija: las filas “desaparecen” justo aquí */
+/* Alineaciones (opcional) */
+.rh-col {
+    text-align: center;
+}
+
+.rh-pos {
+    text-align: center;
+}
+
+.rh-name {
+    text-align: center;
+}
+
+.rh-rpm {
+    text-align: center;
+}
+
+.rh-cat {
+    text-align: center;
+}
+
+.rh-act {
+    text-align: center;
+}
+
+/* ===== Apagar visualmente SOLO el thead de la tabla overlay ===== */
+/* Scoped por aria-labelledby="rank-head" para no tocar otras tablas */
+table[aria-labelledby="rank-head"] thead th {
+    color: transparent !important;
+    background: transparent !important;
+    border-color: transparent !important;
+    /* mantenemos su altura para no alterar medidas */
+}
+
+/* IMPORTANTE: no movemos ni el contenedor ni su overflow vertical. Si tu scroll ya está en .table-viewport, lo dejamos tal cual. Si no tienes .table-viewport, también funciona: el overlay se superpone y listo. */
+/* (Opcional) Si ves que la primera fila roza el borde, puedes dibujar la misma línea en el tope del área scrolleable; esto no cambia tamaños. Descomenta si la quieres:*/
+/* le-viewport::before{ content:""; position:sticky; top:0; display:block; height:0; border-bottom:1px solid rgba(255,255,255,.25); z-index:2; }.tab/* /* ======= SINGLE SCROLLER PARA LAS TABLAS (parche mínimo) ======= */
+/* 1) Mata cualquier scroll vertical ascendente: página / contenedores padres */
+
+.page-scroll,
+main,
+.content-wrapper,
+.content-area {
+    overflow-y: hidden !important;
+    overscroll-behavior: contain !important;
+    /* no cede el scroll al padre */
+    touch-action: pan-x !important;
+    /* iOS: evita que “herede” scroll vertical */
+}
+
+/* 2) El overlay del header de la tabla NO debe tener scroll ni capturar eventos */
+.rank-head {
+    pointer-events: none;
+}
+
+/* 3A) Si usas .table-viewport dentro de .table-wrap (recomendado) */
+.table-wrap {
+    /* mantengo tus size y posición tal cual; solo recorto hacia arriba */
+    overflow: hidden !important;
+    /* el scroll no vive aquí */
+    position: relative;
+}
+
+.table-viewport {
+    position: relative;
+    height: 100% !important;
+    /* ocupa todo el alto que ya le diste a .table-wrap */
+    max-height: 100% !important;
+    overflow-y: auto !important;
+    /* <- ÚNICO scroll vertical */
+    overflow-x: auto;
+    /* si te hace falta horizontal */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    /* no entregar scroll al padre al llegar al final */
+}
+
+/* 3B) Si NO tienes .table-viewport y el scroll va en .table-wrap, usa esto en su lugar:*/
+.table-wrap {
+    overflow-y: auto !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+}
+
+/* 4) Thead real transparente (para que las filas “desaparezcan” justo bajo la línea) */
+table[aria-labelledby="rank-head"] thead th {
+    color: transparent !important;
+    background: transparent !important;
+    border-color: transparent !important;
+}
+
+/* 5) Header fijo transparente + línea inferior (ya lo tienes, lo mantengo) */
+#ranking {
+    border-collapse: separate !important;
+    border-spacing: 0;
+}
+
+#ranking thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+#ranking thead th::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 1px;
+    background: rgba(255, 255, 255, .25);
+    pointer-events: none;
+}
+
+/* 6) Extra anti-“rebote” al llegar arriba/abajo en móviles */
+.table-viewport::-webkit-scrollbar-thumb {
+    background-clip: padding-box;
+}
+
+/* Vídeo de fondo siempre cubriendo */
+/* En 9:16 puedes recortar un poco más si quieres */
+@media (max-aspect-ratio: 9/16),
+(orientation: portrait) and (max-width:480px) {
+    :root {
+        --trim-gap: 5px;
+    }
+
+    /* o el valor que te guste en móvil */
+}
+
+/* === Solo para 9:16 / móvil === */
+@media (max-aspect-ratio: 9/16),
+(orientation: portrait) and (max-width: 480px) {
+    :root {
+        --header-h: 56px;
+    }
+
+    /* altura real del header en móvil */
+    /* 1) El documento NO scrollea */
+    html,
+    body {
+        height: 100% !important;
+        overflow: hidden !important;
+        /* IMPORTANTE: anula tu override anterior */
+        overscroll-behavior: none;
+    }
+
+    /* 2) El contenido SÍ scrollea aquí, debajo del header */
+    .page-scroll {
+        position: relative !important;
+        top: 100px var(--header-h) !important;
+        /* arranca justo debajo del header */
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+        z-index: 0;
+        /* header queda por encima */
+    }
+
+    /* 3) Seguridad: evita que algo quede fuera del contenedor y se “cuelen” */
+    /* Si por alguna razón tienes contenido fuera de .page-scroll, empújalo */
+    main,
+    .content-wrapper,
+    .content-area,
+    #ranking,
+    .table-wrap {
+        padding-top: 0 !important;
+        /* sin padding extra */
+        margin-top: 70px !important;
+    }
+
+    /* 4) Header fijo y transparente (se ve el video detrás) */
+    header,
+    .header,
+    .app-header,
+    .site-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: var(--header-h);
+        z-index: 2000;
+        background: transparent;
+        border-bottom: 1px solid rgba(255, 255, 255, .25);
+    }
+
+    /* 5) Video siempre detrás de todo */
+    #bg-video,
+    .bg-video {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw;
+        height: 100vh;
+        object-fit: cover;
+        object-position: center;
+        z-index: -1 !important;
+    }
+
+    #ranking {
+        width: 100px;
+    }
+
+    .kpi-footer {
+        background: rgba(0, 53, 73, .94);
+        color: #fff;
+        -webkit-backdrop-filter: blur(2px);
+        backdrop-filter: blur(2px);
+        box-shadow: 0 -6px 24px rgba(0, 0, 0, .45), inset 0 1px rgba(255, 255, 255, .06);
+    }
+
+    /* 3 KPIs + CTA (desktop) */
+    .kpi-wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr) auto;
+        align-items: center;
+        text-align: center;
+        gap: 24px;
+        padding: 16px 18px;
+        font-weight: 700;
+    }
+
+    /* KPIs al costado del otro (los de 2 items que me pediste) */
+    .kpi-row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        margin-top: 8px;
+        flex-wrap: nowrap;
+    }
+
+    .kpi-row .kpi {
+        flex: 0 1 48%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-width: 0;
+    }
+
+    .kpi-row .kpi-text {
+        text-align: center;
+        line-height: 1.15;
+    }
+
+    .kpi-number {
+        position: absolute;
+        font-size: 1.9rem;
+        font-weight: 900;
+        letter-spacing: .4px;
+        font-variant-numeric: tabular-nums;
+        text-shadow: 0 1px 0 #4a5252, 0 2px 6px rgba(0, 0, 0, .55), 0 0 14px #656969;
+        filter: drop-shadow(0 8px 22px rgba(0, 0, 0, .45));
+    }
+
+    .kpi-label {
+        position: absolute;
+        font-size: .95rem;
+        font-weight: 700;
+        opacity: .95;
+        left: 10px;
+    }
+
+    .kpi-text {
+        font-size: 1.05rem;
+        font-weight: 800;
+    }
+
+    /* WhatsApp CTA */
+    .wa-cta {
+        text-decoration: none;
+    }
+}
+
+@media (max-aspect-ratio: 16/9) {
+    #bg-video-desktop {
+        display: none;
+    }
+
+    #bg-video-mobile {
+        display: block;
+    }
+}
+
+/* Social */
+/* ============ 9:16 / Móvil ============ */
+@media (max-aspect-ratio: 9/16),
+(orientation: portrait) and (max-width: 480px) {
+    :root {
+        --header-h: 56px;
+    }
+
+    /* Header compacto */
+    .header {
+        height: 46px;
+        z-index: 2000;
+    }
+
+    .isologo {
+        width: 50px;
+        height: 50px;
+        margin: 2px 0 0 4px;
+        top: 0px;
+    }
+
+    .social-icons {
+        top: 6px;
+        right: 12px;
+        gap: 14px;
+    }
+
+    .social-link.instagram {
+        top: 8px;
+        right: 55px;
+    }
+
+    .social-link.whatsapp {
+        top: 10px;
+        right: 10px;
+    }
+
+    .social-icon {
+        width: 45px;
+        height: 45px;
+    }
+
+    /* Hero más compacto */
+    .title {
+        font-size: 1.35rem;
+        line-height: 1.25;
+        margin: 6px auto 8px;
+        max-width: 90%;
+        top: -70px;
+        left: -2px;
+    }
+
+    .subtitle {
+        font-size: 0.8rem;
+        line-height: 1.25;
+        max-width: 92%;
+        margin: 0 auto 8px;
+        color: rgba(255, 255, 255, .9);
+        top: -65px;
+        left: -2px;
+    }
+
+    .content-wrapper {
+        padding: 64px 16px 0;
+    }
+
+    .logo {
+        width: 220px;
+        margin: 0 auto 8px;
+        margin-top: -55px;
+    }
+
+    /* CTA */
+    .catego {
+        top: 80px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .scroll-button {
+        padding: 12px 40px;
+        font-size: .95rem;
+        bottom: 22px;
+    }
+
+    .cta-cell {
+        position: relative;
+        top: 140px;
+        left: 50px;
+    }
+
+    /* Tabla compacta y estable */
+    .table-wrap {
+        margin: calc(var(--header-h) + 8px) auto 12px !important;
+    }
+
+    #ranking {
+        table-layout: fixed !important;
+        width: 94vw !important;
+        min-width: 680px !important;
+        font-size: .9rem !important;
+    }
+
+    #ranking th,
+    #ranking td {
+        padding: 6px 8px !important;
+    }
+
+    #ranking th:nth-child(1),
+    #ranking td:nth-child(1) {
+        width: 11% !important;
+    }
+
+    /* POS */
+    #ranking th:nth-child(2),
+    #ranking td:nth-child(2) {
+        width: 47% !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    /* NOMBRE */
+    #ranking th:nth-child(4),
+    #ranking td:nth-child(4) {
+        width: 20% !important;
+    }
+
+    /* RPM/GEN */
+    #ranking th:nth-child(5),
+    #ranking td:nth-child(5) {
+        width: 16% !important;
+    }
+
+    /* RPM */
+    #ranking th:nth-child(6),
+    #ranking td:nth-child(6) {
+        width: 6% !important;
+    }
+
+    /* CAT/ACT */
+    /* KPIs 2 en línea */
+    .kpi-row {
+        gap: 10px;
+    }
+
+    .kpi-row .kpi {
+        flex-basis: 48%;
+        max-width: 48%;
+    }
+
+    .kpi-row .kpi-text {
+        font-size: clamp(12px, 3.4vw, 14px);
+        position: relative;
+        top: 70px;
+        left: -85px;
+        ;
+    }
+
+    .kpi-label {
+        font-size: clamp(12px, 3.4vw, 14px);
+        position: absolute;
+        left: 160px;
+        top: 398px;
+    }
+
+    .kpi-number {
+        font-size: 2.4rem;
+        position: relative;
+        left: 9px;
+        top: -60px;
+    }
+
+    .Btn {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        width: 45px;
+        height: 45px;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition-duration: 0.3s;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+        background-color: #00d757;
+        left: 310px;
+        top: 120px;
+    }
+
+    .sign {
+        width: 100%;
+        transition-duration: 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .sign svg {
+        width: 25px;
+    }
+
+    .sign svg path {
+        fill: white;
+        z-index: 999;
+    }
+
+    .text {
+        position: absolute;
+        right: 0%;
+        width: 0%;
+        opacity: 0;
+        color: #333;
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition-duration: 0.3s;
+        z-index: 900;
+    }
+
+    .Btn:hover {
+        width: 150px;
+        border-radius: 40px;
+        transition-duration: 0.3s;
+    }
+
+    .Btn:hover .sign {
+        width: 30%;
+        transition-duration: 0.3s;
+        padding-left: 0px;
+    }
+
+    .Btn:hover .text {
+        opacity: 1;
+        width: 70%;
+        transition-duration: 0.3s;
+        padding-right: 10px;
+    }
+
+    .Btn:active {
+        transform: translate(2px, 2px);
+    }
+
+    /* variables auxiliares para el cálculo */
+    .Btn {
+        --w-colapsado: 45px;
+        --w-expandido: 150px;
+        --desplazamiento: calc(var(--w-expandido) - var(--w-colapsado));
+        will-change: width, transform;
+    }
+
+    /* ABRIR hacia la IZQUIERDA */
+    .Btn:hover {
+        width: var(--w-expandido);
+        border-radius: 40px;
+        /* mueve el botón a la izquierda el mismo delta que creció */
+        transform: translateX(calc(-1 * var(--desplazamiento)));
+    }
+
+    /* Mantén tus ajustes internos al hacer hover */
+    .Btn:hover .sign {
+        width: 30%;
+        padding-left: 10px;
+    }
+
+    .Btn:hover .text {
+        opacity: 1;
+        width: 70%;
+        padding-right: 10px;
+    }
+
+    /* click: compón el pequeño “tap” sin perder el corrimiento */
+    .Btn:active {
+        transform: translateX(calc(-1 * var(--desplazamiento))) translate(2px, 2px);
+    }
+
+    /* --- Suaviza el texto del botón: sin reflow --- */
+    .text {
+        position: absolute;
+        right: 12px;
+        /* no animes width: usa tamaño natural */
+        width: auto !important;
+        white-space: nowrap;
+        /* animación suave sin relayout */
+        opacity: 0;
+        transform: translateX(px) scaleX(.96);
+        transform-origin: right center;
+        transition: opacity .18s ease, transform .28s ease;
+        /* antialias + evita parpadeos */
+        will-change: transform, opacity;
+        backface-visibility: hidden;
+    }
+
+    .Btn:hover .text {
+        opacity: 1;
+        transform: translateX(0) scaleX(1);
+    }
+
+    /* Opcional: deja fija el área del ícono para más estabilidad */
+    .sign {
+        flex: 0 0 45px;
+        /* ancho estable para el ícono */
+        min-width: 45px;
+        justify-content: center;
+    }
+
+    /* Mantén tu apertura hacia la izquierda (de tu mensaje anterior) */
+    .Btn {
+        --w-colapsado: 45px;
+        --w-expandido: 220px;
+        --desplazamiento: calc(var(--w-expandido) - var(--w-colapsado));
+        will-change: width, transform;
+    }
+
+    .Btn:hover {
+        width: var(--w-expandido);
+        border-radius: 40px;
+        transform: translateX(calc(-1 * var(--desplazamiento)));
+    }
+
+    .Btn:active {
+        transform: translateX(calc(-1 * var(--desplazamiento))) translate(2px, 2px);
+    }
+
+    /* Recorta el espacio bajo el header SIN tocar tu layout */
+    :root {
+        --header-h: 72px;
+        /* deja tu altura real */
+        --trim-gap: 12px;
+        /* cuánto quieres recortar (8–16px suele ir bien) */
+    }
+
+    /* Si usas contenedor que scrollea bajo el header */
+    .page-scroll {
+        top: calc(var(--header-h) - var(--trim-gap)) !important;
+    }
+
+    /* Si tu contenido no está en .page-scroll, empuja menos con padding-top */
+    main,
+    .content-wrapper,
+    .content-area,
+    #ranking,
+    .table-wrap {
+        padding-top: calc(var(--header-h) - var(--trim-gap)) !important;
+    }
+
+    /* (Opcional) si el <body> tiene padding-top grande, compénsalo un poco en la home */
+    body.home,
+    body.principal {
+        padding-top: calc(35px - var(--trim-gap)) !important;
+        /* 35px era el tuyo */
+    }
+
+    /* Vídeo de fondo siempre cubriendo */
+    /* En 9:16 puedes recortar un poco más si quieres */
+    @media (max-aspect-ratio: 9/16),
+    (orientation: portrait) and (max-width:480px) {
+        :root {
+            --trim-gap: 5px;
+        }
+
+        /* o el valor que te guste en móvil */
+    }
+
+    .offcanvas.offcanvas-top {
+        max-height: 60vh;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+        z-index: 2000;
+    }
+}
+
+.bg-video {
+    object-fit: cover;
+    object-position: center;
+    min-width: 100vw;
+    min-height: 100vh;
+}
+
+/* Más pequeños aún */
+@media (max-width: 380px) {
+    .wa-label {
+        font-size: .9rem;
+        padding: 7px 12px;
+    }
+}
+
+@media (max-width: 360px) and (orientation: portrait) {
+    #ranking {
+        font-size: .9rem;
+    }
+
+    th,
+    td {
+        padding: 6px 7px;
+    }
+
+    .logo {
+        width: 200px;
+    }
+
+    .scroll-button {
+        padding: 11px 32px;
+    }
+}
+
+/* === 9:16: que la tabla se vea completa y scrollee dentro === */
+@media (max-aspect-ratio: 9/16),
+(orientation: portrait) and (max-width: 480px) {
+    :root {
+        --header-h: 56px;
+        /* ALTURA REAL del header en móvil */
+        --footer-h: 0px;
+        /* pon 80px si tienes footer fijo en móvil */
+        --gap: 6px;
+        /* aire bajo la línea del header */
+    }
+
+    /* Si usas .page-scroll y te hace “doble scroll”, puedes ocultarlo: */
+    /* .page-scroll{ overflow-y: hidden !important; } */
+    /* Área de la tabla: ocupa la pantalla disponible y scrollea vertical */
+    .table-wrap {
+        margin: calc(var(--header-h) + var(--gap)) auto 8px !important;
+        height: calc(100dvh - var(--header-h) - var(--gap) - var(--footer-h)) !important;
+        overflow-y: auto !important;
+        /* scroll vertical de filas */
+        overflow-x: auto;
+        /* por si no cabe a lo ancho */
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Densidad más compacta para que entren más filas sin “rebotar” */
+    #ranking {
+        table-layout: fixed !important;
+        width: 85vw !important;
+        min-width: 0 !important;
+        /* permite encoger si hace falta */
+        font-size: 0.6rem !important;
+        line-height: 1.1 !important;
+    }
+
+    #ranking th,
+    #ranking td {
+        padding: 6px 6px !important;
+    }
+
+    /* Ajusta el aire arriba del bloque de tabla si tienes títulos/logos */
+    .title,
+    .subtitle,
+    .logo {
+        margin-bottom: 6px !important;
+    }
+}
+
+/* === 9:16: elimina el “margen invisible” y el micro-scroll lateral === */
+@media (max-aspect-ratio: 9/16),
+(orientation: portrait) and (max-width: 480px) {
+
+    /* El contenedor ocupa todo el ancho del viewport */
+    .table-wrap {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        overflow-x: auto;
+        /* deja scroll si realmente es necesario */
+        -webkit-overflow-scrolling: touch;
+        scrollbar-gutter: stable both-edges;
+        /* evita “gana píxel” por scrollbar */
+        box-sizing: border-box;
+    }
+
+    /* La tabla NO usa vw ni mínimos que la ensanchen */
+    #ranking {
+        width: 100% !important;
+        min-width: 0 !important;
+        table-layout: fixed !important;
+    }
+
+    /* Asegura que celdas no empujen el ancho por contenido largo */
+    #ranking th,
+    #ranking td {
+        box-sizing: border-box;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        /* si quieres envolver, usa: normal + overflow-wrap:anywhere */
+        /* overflow-wrap: anywhere; <- alternativa si prefieres quiebre de línea */
+    }
+
+    /* Quita cualquier “sangrado” de la última columna */
+    #ranking th:last-child,
+    #ranking td:last-child {
+        padding-right: 6px !important;
+    }
+}
+
+@media (max-aspect-ratio: 9/16),
+(orientation: portrait) and (max-width: 480px) {
+    .table-wrap {
+        overflow-x: clip;
+    }
+
+    /* corta el 1px sobrante sin ocultar contenido real */
+}
+
+/* 9:16: juntar (reducir el espacio) entre las primeras columnas */
+@media (max-aspect-ratio: 9/16),
+(orientation: portrait) and (max-width:480px) {
+
+    /* Columna 1 (por ejemplo POS): quita espacio derecho */
+    #ranking th:nth-child(1) #ranking td:nth-child(1) {
+        padding-right: 10px !important;
+    }
+
+    /* Columna 2 (por ejemplo NOMBRE): quita espacio izquierdo y derecho un poco */
+    #ranking th:nth-child(2),
+    #ranking td:nth-child(2) {
+        padding-left: -50px !important;
+        padding-right: 30px !important;
+        /* ajusta si quieres aún más pegado */
+    }
+
+    /* Si quieres también pegar la 2 con la 4 (porque ocultaste la 3 en móvil): */
+    #ranking th:nth-child(4),
+    #ranking td:nth-child(4) {
+        padding-left: 2px !important;
+    }
+
+    /* Asegura que nada “empuje” el ancho y cause scroll lateral */
+    #ranking {
+        width: 100% !important;
+        min-width: 0 !important;
+        table-layout: fixed !important;
+    }
+
+    #ranking th,
+    #ranking td {
+        box-sizing: border-box;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis
+    }
+}
+
+/* === 9:16: que 1ª y última columna se vean completas === */
+/* Orden de columnas esperado: 1 POS, 2 NOMBRE, 3 RPM, 4 CAT, 5 ACT */
+@media (max-aspect-ratio: 9/16),
+(orientation: portrait) and (max-width:480px) {
+
+    /* La tabla ocupa todo el ancho disponible */
+    .table-wrap {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+    }
+
+    #ranking {
+        width: 100% !important;
+        min-width: 0 !important;
+        table-layout: fixed !important;
+    }
+
+    /* Encabezados sin elipsis */
+    #ranking th {
+        white-space: nowrap !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        font-size: .78rem !important;
+        letter-spacing: .3px !important;
+    }
+
+    /* Reparto de anchos (ajústalos si quieres) */
+    #ranking th:nth-child(1),
+    #ranking td:nth-child(1) {
+        width: 12% !important;
+        padding-right: 4px !important;
+    }
+
+    /* POS */
+    #ranking th:nth-child(2),
+    #ranking td:nth-child(2) {
+        width: 38% !important;
+        padding-left: 4px !important;
+        padding-right: 6px !important;
+    }
+
+    /* NOMBRE */
+    #ranking th:nth-child(3),
+    #ranking td:nth-child(3) {
+        width: 14% !important;
+    }
+
+    /* RPM */
+    #ranking th:nth-child(4),
+    #ranking td:nth-child(4) {
+        width: 10% !important;
+    }
+
+    /* CAT (más ancho) */
+    #ranking th:nth-child(5),
+    #ranking td:nth-child(5) {
+        width: 10% !important;
+        font-weight: 10px;
+    }
+
+    /* ACT */
+    /* CAT: permitir 2 líneas y bajar un poco la tipografía para que quepa */
+    #ranking td:nth-child(4) {
+        white-space: normal !important;
+        /* permite salto */
+        overflow: visible !important;
+        text-overflow: clip !important;
+        font-size: .82rem !important;
+        line-height: 1.15 !important;
+        word-break: keep-all;
+        overflow-wrap: anywhere;
+        /* si hay palabras largas */
+    }
+
+    /* Si el header CAT también se recorta, deja envolverlo */
+    #ranking th:nth-child(4) {
+        white-space: normal !important;
+    }
+
+    /* Última celda: un poco más de aire para que no se “coma” 1–2px del borde */
+    #ranking th:last-child,
+    #ranking td:last-child {
+        padding-right: 10px !important;
+    }
+
+    /* (Opcional) Nombre puede seguir con elipsis si no cabe */
+    #ranking td:nth-child(2) {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+/* 9:16 — Reparto de columnas para que TODAS salgan completas */
+@media (max-aspect-ratio: 9/16),
+(orientation: portrait) and (max-width:480px) {
+
+    /* La tabla ocupa todo el ancho del contenedor sin “micro-scroll” */
+    .table-wrap {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: auto;
+    }
+
+    #ranking {
+        width: 100% !important;
+        min-width: 0 !important;
+        table-layout: fixed !important;
+    }
+
+    /* Tipografía de cabecera un pelín más compacta */
+    #ranking th {
+        font-size: .78rem !important;
+        letter-spacing: .3px;
+        white-space: nowrap;
+    }
+
+    /* Distribución (suma 100%) */
+    #ranking th:nth-child(1),
+    #ranking td:nth-child(1) {
+        /* POS */
+        width: 8% !important;
+        padding-right: 4px !important;
+    }
+
+    #ranking th:nth-child(2),
+    #ranking td:nth-child(2) {
+        /* NOMBRE */
+        width: 36% !important;
+        padding-left: 6px !important;
+        padding-right: 6px !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    #ranking th:nth-child(3),
+    #ranking td:nth-child(3) {
+        /* RPM */
+        width: 0% !important;
+        /* ↓ más angosta */
+        padding-left: px !important;
+        padding-right: px !important;
+        /* “pegada” a NOMBRE */
+        text-align: right;
+    }
+
+    #ranking th:nth-child(4),
+    #ranking td:nth-child(4) {
+        /* CAT */
+        width: 6% !important;
+        height: 4%;
+        /* ↑ un poco más ancha */
+        padding-left: 2px !important;
+    }
+
+    #ranking td:nth-child(4) {
+        width: 10px;
+        height: 10px;
+    }
+
+    #ranking th:nth-child(5),
+    #ranking td:nth-child(5) {
+        /* CAT */
+        width: 14% !important;
+        /* ↑ un poco más ancha */
+        padding-left: 4px !important;
+    }
+
+    #ranking th:nth-child(6),
+    #ranking td:nth-child(6) {
+        /* A / ACT */
+        width: 9% !important;
+        /* ↑ gana espacio para que no se corte */
+        padding-left: 4px !important;
+        padding-right: 10px !important;
+        /* aire contra el borde */
+        white-space: nowrap;
+        overflow: visible;
+        text-overflow: clip;
+        /* que se vea completo */
+    }
+
+    /* Filas más compactas para mostrar más contenido sin cortar */
+    #ranking th,
+    #ranking td {
+        padding: 5px 5px !important;
+        line-height: 1.0 !important;
+    }
+}
+
+@media (max-aspect-ratio: 9/16),
+(orientation: portrait) and (max-width:480px) {
+    #ranking td:nth-child(4) {
+        white-space: normal !important;
+        line-height: 1.15 !important;
+        font-size: .82rem !important;
+    }
+}
+
+/* === 9:16: tabla sin scroll lateral + RPM más pegado + última celda visible === */
+@media (max-aspect-ratio: 9/16),
+(orientation: portrait) and (max-width:480px) {
+
+    /* el contenedor general no scrollea en X */
+    .page-scroll {
+        overflow-x: hidden !important;
+    }
+
+    /* el envoltorio de la tabla ocupa 100% exacto, sin “sangrías” */
+    .table-wrap {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        box-sizing: border-box;
+        overflow-x: hidden !important;
+        /* mata el micro-scroll */
+        -webkit-overflow-scrolling: touch;
+        scrollbar-gutter: stable both-edges;
+        /* evita saltos por barra */
+    }
+
+    .table-wrap::before,
+    .table-wrap::after {
+        content: none !important;
+    }
+
+    /* la tabla no usa vw ni mínimos que empujen */
+    #ranking {
+        width: 100% !important;
+        min-width: 0 !important;
+        table-layout: fixed !important;
+        border-collapse: collapse;
+        font-size: .78rem !important;
+        line-height: 1.15 !important;
+    }
+
+    #ranking th,
+    #ranking td {
+        padding: 8px 6px !important;
+        box-sizing: border-box;
+    }
+
+    /* Reparto de anchos (ajústalos si tu orden cambia) */
+    /* 1) POS */
+    #ranking th:nth-child(1),
+    #ranking td:nth-child(1) {
+        width: 7% !important;
+        padding-right: 4px !important;
+        white-space: nowrap;
+    }
+
+    /* 2) NOMBRE */
+    #ranking th:nth-child(2),
+    #ranking td:nth-child(2) {
+        width: 14% !important;
+        padding-left: 6px !important;
+        padding-right: 6px !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* 3) RPM — más pegado y angosto */
+    #ranking th:nth-child(3),
+    #ranking td:nth-child(3) {
+        width: 12% !important;
+        padding-left: 2px !important;
+        padding-right: 2px !important;
+        text-align: right;
+        white-space: nowrap;
+    }
+
+    /* 4) CAT — puede partir en 2 líneas si hace falta */
+    #ranking th:nth-child(4),
+    #ranking td:nth-child(4) {
+        width: 4% !important;
+        padding-left: 2px !important;
+        text-align: center !important;
+        line-height: 1.15px;
+    }
+
+    #ranking td:nth-child(4) {
+        white-space: normal !important;
+        overflow-wrap: anywhere;
+        text-overflow: clip;
+        font-size: 1px !important;
+        line-height: 1.15 !important;
+    }
+
+    /* 5) A/ACT — que se vea completa y no se coma el borde */
+    #ranking th:nth-child(5),
+    #ranking td:nth-child(5) {
+        width: 9% !important;
+        white-space: nowrap;
+        padding-left: 4px !important;
+        padding-right: 5px !important;
+    }
+
+    #ranking td:nth-child(2) .name {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        white-space: normal;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+        hyphens: auto;
+    }
+
+    #ranking td:nth-child(5) .categoria,
+    #ranking td:nth-child(6) .categoria {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        white-space: normal;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+        hyphens: auto;
+        font-size: 0.56rem;
+    }
+}
+
+/* 9:16 — Evitar que se recorten descendentes (g, y, j) en la tabla */
+@media (max-aspect-ratio: 9/16),
+(orientation: portrait) and (max-width:480px) {
+
+    /* Da un poquito más de altura de línea y aire vertical a TODAS las celdas */
+    #ranking th,
+    #ranking td {
+        line-height: 1.34 !important;
+        /* sube desde 1.1/1.15 */
+        padding-top: 7px !important;
+        /* +1px */
+        padding-bottom: 8px !important;
+        /* +2px clave para las colitas */
+        overflow: visible !important;
+        /* que el texto pueda “respirar” */
+    }
+
+    /* Un poco de aire al fondo del contenedor para que el borde inferior no “corte” la última fila */
+    .table-wrap {
+        padding-bottom: 10px !important;
+        overflow-x: hidden !important;
+        /* seguimos evitando micro-scroll lateral */
+    }
+
+    td.act .arrow-up,
+    td.act .arrow-down,
+    td.act .arrow-right {
+        font-size: 0.5rem !important;
+    }
+
+    /* Mantén el padding de tus celdas; si queda muy alto en móvil, compacta: */
+    @media (max-aspect-ratio: 9/16),
+    (orientation: portrait) and (max-width:480px) {
+        #ranking td.pos-cell {
+            padding-top: 7px;
+            padding-bottom: 7px;
+            line-height: 1.2;
+        }
+    }
+
+    /* Celda POS (base) */
+    #ranking td.pos-cell {
+        position: relative;
+        /* crea el contexto para el ::before */
+        z-index: 0;
+        /* el contenido queda por encima del ::before -1 */
+        font-weight: 800;
+        color: #fff;
+        text-align: center;
+        overflow: hidden;
+    }
+
+    /* Colores TOP 3 */
+    #ranking td.pos-1 {
+        --pos-bg: lch(86.66% 59.61 159.86 / 0.973);
+    }
+
+    #ranking td.pos-2 {
+        --pos-bg: hwb(162 25% 6%);
+    }
+
+    #ranking td.pos-3 {
+        --pos-bg: hsla(163, 54%, 59%, 0.774);
+    }
+
+    /* Bloque de color detrás del número */
+    #ranking td.pos-cell::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--pos-bg, transparent);
+        background-image: linear-gradient(to bottom, rgba(255, 255, 255, .10), rgba(0, 0, 0, .08));
+        z-index: -1;
+        /* <— CLAVE: va detrás del contenido */
+        pointer-events: none;
+        /* no bloquea clics/selección */
+    }
+
+    /* ===== Celda POS: base ===== */
+    #ranking td.pos-cell {
+        position: relative;
+        z-index: 0;
+        /* contenido arriba del ::before */
+        font-weight: 800;
+        color: #fff;
+        text-align: center;
+        /* ajusta a left si prefieres */
+        overflow: hidden;
+    }
+
+    #ranking td.pos-cell::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        /* como tu diseño */
+        z-index: -1;
+        /* detrás del número */
+        background: transparent;
+        /* se setea por clase */
+        pointer-events: none;
+        /* leve brillo para “tarjeta” */
+        background-image: linear-gradient(to bottom, rgba(255, 255, 255, .08), rgba(0, 0, 0, .10));
+    }
+
+    /* ===== Masculino / Femenino: TOP 3 fijos ===== */
+    #ranking td.pos-cell.pos-1:not(.pos-grad)::before {
+        background: #4ac999;
+    }
+
+    #ranking td.pos-cell.pos-2:not(.pos-grad)::before {
+        background: #4ac998a8;
+    }
+
+    #ranking td.pos-cell.pos-3:not(.pos-grad)::before {
+        background: #4ac99865;
+    }
+
+    /* ===== General: TOP 10 con degradado desde #4ac999 ===== */
+    /* Usamos HSL con alpha decreciente: más intenso en 1°, más suave en 10° */
+    :root {
+        /* #4ac999 ≈ hsl(160, 53%, 54%) */
+        --g-h: 160;
+        --g-s: 53%;
+        --g-l: 54%;
+    }
+
+    #ranking td.pos-cell.pos-grad::before {
+        background: hsl(var(--g-h) var(--g-s) var(--g-l) / var(--g-a, 1));
+        background-image: linear-gradient(to bottom, rgba(255, 255, 255, .08), rgba(0, 0, 0, .10));
+    }
+
+    /* Intensidades para 1..10 (ajústalas a gusto) */
+    #ranking td.pos-grad.pos-1::before {
+        --g-a: 1.00;
+    }
+
+    #ranking td.pos-grad.pos-2::before {
+        --g-a: 0.85;
+    }
+
+    #ranking td.pos-grad.pos-3::before {
+        --g-a: 0.72;
+    }
+
+    #ranking td.pos-grad.pos-4::before {
+        --g-a: 0.62;
+    }
+
+    #ranking td.pos-grad.pos-5::before {
+        --g-a: 0.55;
+    }
+
+    #ranking td.pos-grad.pos-6::before {
+        --g-a: 0.46;
+    }
+
+    #ranking td.pos-grad.pos-7::before {
+        --g-a: 0.34;
+    }
+
+    #ranking td.pos-grad.pos-8::before {
+        --g-a: 0.28;
+    }
+
+    #ranking td.pos-grad.pos-9::before {
+        --g-a: 0.22;
+    }
+
+    #ranking td.pos-grad.pos-10::before {
+        --g-a: 0.16;
+    }
+
+    /* Compacto para 9:16 si quieres */
+
+
+    .rank-search {
+        position: relative;
+        top: -80px;
+        left: -8px;
+    }
+
+    h2 {
+        position: absolute;
+        font-size: 2.2rem;
+        top: 90px;
+        left: 60px;
+        color: #ffffff;
+    }
+
+    .cat2 {
+        width: 150px;
+        height: auto;
+        position: relative;
+        top: -5px;
+    }
+
+    /* SUBIR LA TABLA (antes tenía ~90px) */
+    .table-wrap {
+        margin: 40px auto 16px !important;
+        /* ajusta 56→48→40px si la quieres aún más arriba */
+    }
+
+    /* Altura real del header (ajústala a la tuya) */
+    :root {
+        --header-h: 16px;
+    }
+
+    /* 1) En páginas de ranking, quita el “hero” y/o reduce espacios */
+    body.ranking-page .logo,
+    body.ranking-page .logo2 {
+        display: none !important;
+        /* si no quieres el logo grande en ranking */
+    }
+
+    /* Si prefieres mantener el logo, cámbialo por tamaño más chico en móvil body.ranking-page .logo, body.ranking-page .logo2 { width: 140px !important; margin-top: 6px !important; } */
+    /* 2) El <h2 class="title"> tenía margin-top alto: anúlalo */
+    body.ranking-page .title {
+        position: static !important;
+        margin: calc(var(--header-h) + 6px) auto 6px !important;
+    }
+
+    /* 3) Compacta el buscador encima de la tabla */
+    body.ranking-page .search-wrap,
+    body.ranking-page .search-box,
+    body.ranking-page .search-row {
+        margin: -6px auto 6px !important;
+    }
+
+    /* 4) Sube la tabla y dale scroll interno con TH pegajoso */
+    body.ranking-page .table-wrap {
+        margin: -140px auto 12px !important;
+        /* SUBE la tabla */
+        max-height: calc(100dvh - var(--header-h) - 120px);
+        /* espacio para título+buscador */
+        overflow-y: auto;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Encabezado fijo dentro del contenedor con scroll */
+    #ranking {
+        border-collapse: separate !important;
+        border-spacing: 0;
+    }
+
+    #ranking thead th {
+        position: sticky !important;
+        top: 0;
+        /* pegado al tope de .table-wrap */
+        z-index: 2;
+        background: rgba(7, 34, 55, .98);
+        box-shadow: 0 1px 0 rgba(255, 255, 255, .18);
+    }
+
+    /* 5) Por si había margen superior extra global en tablas */
+    table#ranking {
+        margin-top: 0 !important;
+    }
+
+    /* Ajusta alturas reales de tu header y del bloque encima de la tabla (título + buscador + separaciones) */
+    :root {
+        --header-h: 56px;
+        /* cambia si tu header mide más */
+        --above-table: 90px;
+        /* título + buscador + aire */
+    }
+
+    /* Contenedor que RECORTA lo que se sale por arriba: nada se ve sobre la línea */
+    .table-wrap {
+        position: relative;
+        width: min(100%, 1100px);
+        margin: 30px auto 12px !important;
+        /* sube/baja la tabla */
+        overflow: hidden;
+        /* clave para ocultar el contenido que sube */
+    }
+
+    /* Línea separadora (queda fija, el título puede seguir transparente) */
+    .table-wrap::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        height: 1px;
+        background: rgba(255, 255, 255, .25);
+        /* tu línea */
+        z-index: 5;
+    }
+
+    /* Área que SÍ scrollea (vertical/horizontal) */
+    .table-viewport {
+        max-height: calc(100dvh - var(--header-h) - var(--above-table));
+        overflow-y: auto;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        scrollbar-gutter: stable both-edges;
+        padding-bottom: max(16px, env(safe-area-inset-bottom));
+        /* asegura ver la última fila */
+    }
+
+    /* En navegadores modernos usa 100svh para iOS */
+    @supports (height: 100svh) {
+        .table-viewport {
+            max-height: calc(100svh - var(--header-h) - var(--above-table));
+        }
+    }
+
+    /* Encabezado pegajoso TRANSPARENTE (se sigue viendo el video) */
+    #ranking {
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    #ranking thead th {
+        position: sticky;
+        top: 0;
+        /* pegado dentro de .table-viewport */
+        z-index: 2;
+        background: transparent !important;
+        /* sin fondo */
+        box-shadow: none !important;
+        border-bottom: 1px solid rgba(255, 255, 255, .18);
+        /* la línea bajo el TH */
+    }
+
+    /* Por si había fades/sombras laterales previos */
+    .table-wrap,
+    .table-wrap::before,
+    .table-wrap::after {
+        background: none !important;
+        -webkit-mask-image: none !important;
+        mask-image: none !important;
+        box-shadow: none !important;
+
+        :root {
+            --header-h: 26px;
+            /* alto real del header fijo */
+            --above-table: 100px;
+            /* título + buscador + aire encima de la tabla */
+        }
+
+        /* Recorta lo que sube (evita que la tabla se vea sobre el título) */
+        .table-wrap {
+            position: relative;
+            width: min(100%, 1100px);
+            margin: 60px auto 32px !important;
+            overflow: hidden;
+            /* <- clave */
+        }
+
+        /* Línea de separación justo encima de la tabla */
+        .table-wrap::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            height: 1px;
+            background: rgba(255, 255, 255, .25);
+            /* tu línea */
+            z-index: 5;
+        }
+
+        /* Área con scroll interno (vertical y horizontal) */
+        .table-viewport {
+            max-height: calc(100dvh - var(--header-h) - var(--above-table));
+            overflow-y: auto;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+            scrollbar-gutter: stable both-edges;
+            padding-bottom: max(16px, env(safe-area-inset-bottom));
+            /* asegura ver la última fila */
+        }
+
+        /* iOS moderno: usa 100svh para evitar barras dinámicas */
+        @supports (height: 100svh) {
+            .table-viewport {
+                max-height: calc(100svh - var(---h) - var(--above-table));
+            }
+        }
+
+        /* Encabezado completamente transparente y pegajoso dentro del viewport */
+        #ranking {
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        #ranking thead th {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            background: transparent !important;
+            /* se ve el video */
+            box-shadow: none !important;
+            border-bottom: 1px solid rgba(255, 255, 255, .18);
+        }
+
+        /* Por si alguna regla anterior te metía fades/sombras laterales */
+        .table-wrap,
+        .table-wrap::before,
+        .table-wrap::after {
+            background: none !important;
+            -webkit-mask-image: none !important;
+            mask-image: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Más “aire” al final del scroller para que se vea la última fila */
+        .table-viewport {
+            /* si ya lo tienes, deja overflow tal cual */
+            padding-bottom: calc(max(env(safe-area-inset-bottom, 0px), 16px) + 32px) !important;
+            /* cuando haces scroll-into-view, evita que el último ítem quede pegado al borde */
+            scroll-padding-bottom: 80px;
+        }
+
+        /* iOS moderno: usa 100svh para que el alto ignore la barra dinámica */
+        @supports (height: 150svh) {
+            .table-viewport {
+                max-height: calc(200svh - var(--header-h, 86px) - var(--above-table, 150px)) !important;
+            }
+        }
+    }
+
+    .table-wrap {
+        position: absolute !important;
+        left: 15px !important;
+        top: 330px !important;
+        width: 360px !important;
+        height: -500px !important;
+    }
+
+    .page-scroll {
+        position: fixed !important;
+    }
+
+    /* ========================= */
+    /* === Ajuste mínimo SOLO SCROLL EN TABLAS (sin cambiar medidas) === */
+    .page-scroll {
+        overflow-y: hidden !important;
+    }
+
+    /* bloquea scroll de la página */
+    .table-wrap {
+        overflow-y: auto !important;
+    }
+
+    /* activa scroll vertical en la tabla */
+    #ranking thead th {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+    }
+
+    /* header pegajoso dentro del scroller */
+    /* ========================= */
+    .page-scroll {
+        top: calc(var(--header-h) - 10px) !important;
+    }
+
+    .menu-btn {
+        display: inline-grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    .menu-btn .icon {
+        display: block;
+    }
+
+    .menu-btn .icon-close {
+        display: none;
+    }
+
+    /* Al abrir: se muestra la X y se oculta la hamburguesa */
+    .menu-btn.is-open .icon-burger {
+        display: none;
+    }
+
+    .menu-btn.is-open .icon-close {
+        display: block;
+    }
+
+    /* Utilidad para lectores de pantalla */
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    .main-nav {
+        position: relative;
+        left: 2px !important;
+    }
+
+    .logo1 {
+        width: 90px;
+        height: 90px;
+        margin: 5px;
+        position: relative;
+        top: 5px;
+        left: 140px;
+        z-index: 600;
+    }
+
+    .logo1 img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+    }
+
+    :root {
+        --header-h: 60px !important;
+        /* cambia si tu header mide más */
+        --above-table: 90px;
+        /* título + buscador + aire */
+    }
+
+    /* Contenedor */
+    /* ====== BUSCADOR EN HEADER (MISMO DISEÑO DE ANTES) ====== */
+    /* Contenedor flotante en el header (derecha, sobre el logo) */
+    .search-container {
+        position: absolute;
+        /* no altera el layout */
+        top: 11px;
+        /* ajusta según tu header */
+        right: 6px;
+        display: flex;
+        align-items: center;
+        color: #fff;
+        /* currentColor para los SVG */
+        z-index: 3001;
+        /* sobre logo/video */
+    }
+
+    /* Botón: lupa ⇄ X (en el MISMO sitio) */
+    .search-toggle {
+        display: inline-grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+        color: inherit;
+        position: relative;
+        z-index: 3002;
+        /* SIEMPRE por encima del panel */
+    }
+
+    /* Iconos del botón */
+    .search-toggle .icon {
+        display: block;
+    }
+
+    .search-toggle .icon-close {
+        display: none;
+    }
+
+    /* Estado abierto: muestra la X (negra) sin mover el botón */
+    .search-toggle.is-open .icon-search {
+        display: none;
+    }
+
+    .search-toggle.is-open .icon-close {
+        display: block;
+        stroke: #000;
+    }
+
+    /* Panel de búsqueda: SIN animaciones; aparece a la izquierda del botón */
+    .search-panel {
+        position: absolute;
+        top: -4px;
+        right: -1px;
+        /* deja el botón en su sitio */
+        display: none;
+        /* se controla por clase en el contenedor */
+        align-items: center;
+        z-index: 3001;
+        /* debajo del botón (que está en 3002) */
+    }
+
+    /* Mostrar panel cuando está activo */
+    .search-container.active .search-panel {
+        display: flex;
+    }
+
+    /* Input con fondo blanco para tapar lo que haya debajo (logo/video) */
+    .search-input {
+        width: 290px;
+        /* mismo tamaño de antes */
+        height: 45px;
+        background: #fff;
+        color: #111;
+        border: 1px solid rgba(255, 255, 255, .25);
+        border-radius: 8px;
+        padding: 0 14px;
+        outline: none;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, .25);
+    }
+
+    .search-input {
+        font-size: 16px;
+        /* mínimo en móviles para evitar zoom */
+    }
+
+    /* ========================= MENÚ PLEGABLE (debajo lupa) ========================= */
+    /* Variables para mover, color y tamaño */
+    :root {
+        --fm-top: 48px;
+        /* distancia vertical desde la lupa */
+        --fm-right: 0px;
+        /* distancia horizontal desde el borde derecho del contenedor */
+        --fm-width: 260px;
+        /* ancho del panel */
+        --fm-bg: #0b2236;
+        /* fondo del panel */
+        --fm-fg: #fff;
+        /* texto del panel */
+        --fm-accent: #4ac999;
+        /* color activo/hover */
+        --fm-radius: 10px;
+        /* radio de borde */
+        --fm-shadow: 0 16px 40px rgba(0, 0, 0, .35);
+        --fm-z: 3003;
+        /* z-index del panel */
+        --fm-speed: 220ms;
+        /* velocidad animación */
+    }
+
+    /* Envuélvelo cerca del buscador; no altera layout */
+    .fold-menu {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: var(--fm-z);
+        color: var(--fm-fg);
+        font: inherit;
+    }
+
+    /* Botón disparador (puedes ocultar el texto y poner icono si quieres) */
+    .fold-trigger {
+        appearance: none;
+        border: 1px solid rgba(255, 255, 255, .25);
+        background: transparent;
+        color: currentColor;
+        height: 36px;
+        padding: 0 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background .2s ease, border-color .2s ease;
+    }
+
+    .fold-trigger:hover,
+    .fold-trigger[aria-expanded="true"] {
+        background: rgba(255, 255, 255, .1);
+        border-color: rgba(255, 255, 255, .4);
+    }
+
+    /* Panel plegable */
+    .fold-panel {
+        position: absolute;
+        top: var(--fm-top);
+        right: var(--fm-right);
+        width: var(--fm-width);
+        background: var(--fm-bg);
+        color: var(--fm-fg);
+        border: 1px solid rgba(255, 255, 255, .08);
+        border-radius: var(--fm-radius);
+        box-shadow: var(--fm-shadow);
+        overflow: hidden;
+        /* Animación de altura */
+        height: 0;
+        transition: height var(--fm-speed) ease;
+    }
+
+    /* Lista interna */
+    .fold-list {
+        list-style: none;
+        margin: 0;
+        padding: 6px;
+    }
+
+    .fold-item {
+        display: block;
+        padding: 10px 12px;
+        text-decoration: none;
+        color: inherit;
+        border-radius: 6px;
+        transition: background .18s ease, color .18s ease;
+    }
+
+    .fold-item:hover {
+        background: rgba(255, 255, 255, .08);
+    }
+
+    .fold-item.active {
+        background: rgba(74, 201, 153, .12);
+        color: var(--fm-accent);
+        font-weight: 600;
+    }
+
+    .fold-divider {
+        height: 1px;
+        margin: 6px 4px;
+        background: rgba(255, 255, 255, .1);
+    }
+
+    /* Estado abierto (se maneja por inline-style height y [hidden]) */
+    .fold-panel.open {
+        /* height se setea por JS con scrollHeight */
+    }
+
+    /* Backdrop, mismas reglas del sidebar */
+    .fold-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, .45);
+        backdrop-filter: blur(1px);
+        z-index: calc(var(--fm-z) - 1);
+        opacity: 0;
+        transition: opacity var(--fm-speed) ease;
+    }
+
+    .fold-backdrop.open {
+        opacity: 1;
+    }
+
+    /* ===== Dropdown de categorías (debajo del header) ===== */
+    /* TUNING RÁPIDO */
+    :root {
+        /* Posición: se dibuja dentro de .page-scroll; sticky lo deja pegado arriba del contenido */
+        --cats-dd-offset-x: 0px;
+        /* mueve horizontalmente todo el bloque */
+        --cats-dd-offset-y: 0px;
+        /* si quieres bajarlo un poquito más del inicio del contenido */
+        --cats-dd-maxw: 280px;
+        /* ancho máximo del menú */
+        --cats-dd-z: 5001;
+        /* por encima del contenido normal, debajo del header si hace falta */
+        /* Botón */
+        --cats-btn-bg: rgba(7, 34, 55, .86);
+        --cats-btn-color: #fff;
+        --cats-btn-border: 1px solid rgba(255, 255, 255, .18);
+        --cats-btn-radius: 10px;
+        --cats-btn-pad-y: 10px;
+        --cats-btn-pad-x: 14px;
+        --cats-btn-font: 0.95rem;
+        --cats-btn-shadow: 0 6px 18px rgba(0, 0, 0, .25);
+        /* Menú */
+        --cats-menu-bg: rgba(7, 34, 55, .98);
+        --cats-menu-color: #fff;
+        --cats-menu-border: 1px solid rgba(255, 255, 255, .18);
+        --cats-menu-radius: 14px;
+        --cats-menu-shadow: 0 16px 36px rgba(0, 0, 0, .45);
+        --cats-item-hover: rgba(255, 255, 255, .08);
+        --cats-item-active: #4ac99922;
+        /* leve indicación si es la activa */
+    }
+
+    /* Contenedor pegado al tope de .page-scroll, alineado a la derecha */
+    .cats-dropdown-wrap {
+        position: sticky;
+        top: 0;
+        /* queda justo donde arranca el contenido (debajo del header fijo) */
+        z-index: var(--cats-dd-z);
+        display: flex;
+        justify-content: flex-end;
+        /* alinea a la derecha (debajo de la lupa) */
+        padding: 8px 10px;
+        /* pequeño aire */
+        transform: translate(var(--cats-dd-offset-x), var(--cats-dd-offset-y));
+    }
+
+    /* Botón disparador */
+    .cats-trigger {
+        background: var(--cats-btn-bg);
+        color: var(--cats-btn-color);
+        border: var(--cats-btn-border);
+        border-radius: var(--cats-btn-radius);
+        padding: var(--cats-btn-pad-y) var(--cats-btn-pad-x);
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-size: var(--cats-btn-font);
+        line-height: 1;
+        cursor: pointer;
+        box-shadow: var(--cats-btn-shadow);
+        -webkit-backdrop-filter: blur(4px);
+        backdrop-filter: blur(4px);
+    }
+
+    .cats-trigger:focus-visible {
+        outline: 2px solid #4ac999;
+        outline-offset: 2px;
+    }
+
+    .cats-trigger-text {
+        white-space: nowrap;
+    }
+
+    /* Chevron rota cuando está abierto */
+    .cats-trigger[aria-expanded="true"] .cats-chevron {
+        transform: rotate(180deg);
+    }
+
+    .cats-chevron {
+        transition: transform .2s ease;
+        opacity: .92;
+    }
+
+    /* Lista del menú */
+    .cats-menu {
+        position: absolute;
+        margin-top: 8px;
+        right: 10px;
+        /* alineado al borde derecho del botón */
+        max-width: var(--cats-dd-maxw);
+        min-width: 80px !important;
+        background: var(--cats-menu-bg);
+        color: var(--cats-menu-color);
+        border: var(--cats-menu-border);
+        border-radius: var(--cats-menu-radius);
+        box-shadow: var(--cats-menu-shadow);
+        -webkit-backdrop-filter: blur(4px);
+        backdrop-filter: blur(4px);
+        list-style: none;
+        padding: 8px;
+        display: none;
+        /* hidden por defecto */
+    }
+
+    .cats-menu.open {
+        display: block;
+    }
+
+    .cats-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 10px;
+        border-radius: 10px;
+        text-decoration: none;
+        color: inherit;
+        transition: background-color .15s ease, transform .06s ease;
+    }
+
+    .cats-item:hover {
+        background: var(--cats-item-hover);
+    }
+
+    .cats-item:active {
+        transform: scale(.995);
+    }
+
+    .cats-item.active {
+        background: var(--cats-item-active);
+        border: 1px solid #4ac99955;
+    }
+
+    .cats-item-icon {
+        width: 20px;
+        height: 20px;
+        object-fit: contain;
+        display: block;
+        border-radius: 4px;
+    }
+
+    /* Responsivo pequeño: que el menú no se salga */
+    @media (max-width: 480px) {
+        .cats-menu {
+            right: 6px;
+            min-width: 70%;
+        }
+    }
+
+    .cats-menu {
+        background: rgba(7, 34, 55, 0);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        position: relative;
+        right: -4px;
+        top: 4px;
+    }
+
+    .cats-trigger {
+        background: rgba(7, 34, 55, 0);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        position: absolute;
+        right: 10px;
+        top: 20px;
+    }
+
+    /* === Header de la tabla fijo, transparente y con línea inferior === */
+    /* Asegura que el scroll esté en el contenedor de la tabla */
+    .table-wrap {
+        position: relative;
+        /* recorta lo que sube por arriba */
+    }
+
+    /* Si ya usas .table-viewport déjalo; si no, el scroll puede estar en .table-wrap */
+    .table-viewport {
+        overflow: hidden !important;
+        max-height: inherit;
+        /* respeta tu altura si ya la definiste */
+        overflow-y: auto;
+        /* scroll vertical de filas */
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Si NO tienes .table-viewport, descomenta esta línea para que .table-wrap scrollee .table-wrap { overflow-y: auto; } */
+    #ranking {
+        border-collapse: separate;
+        /* necesario para sticky estable */
+        border-spacing: 0;
+    }
+
+    /* Encabezados pegajosos, transparentes */
+    #ranking thead th {
+        position: sticky;
+        top: 0;
+        /* pegado al tope del área scrolleable */
+        z-index: 2;
+        /* por encima de las filas */
+        background: transparent !important;
+        /* se sigue viendo el video/fondo */
+        box-shadow: none !important;
+    }
+
+    /* Línea fija bajo el encabezado (las filas desaparecen justo aquí) */
+    #ranking thead th::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -1px;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.25);
+        /* misma línea que usas */
+        pointer-events: none;
+    }
+
+    /* Opcional: evita que la primera fila “salte” bajo el sticky en algunos navegadores */
+    #ranking thead tr {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* (Opcional) si ves que el borde se “tapa”, dale un poco más de prioridad */
+    #ranking thead th {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.18) !important;
+    }
+
+    /* El scroll sucede aquí, no en body/page-scroll */
+    .table-wrap {
+        position: relative;
+        overflow: hidden;
+        /* recorta lo que sube por arriba */
+    }
+
+    .table-viewport {
+        position: relative;
+        max-height: inherit;
+        /* respeta tu altura si ya la definiste */
+        overflow-y: auto;
+        /* <- solo scrollean las filas */
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* La tabla necesita 'separate' para que sticky sea estable */
+    #ranking {
+        border-collapse: separate !important;
+        border-spacing: 0;
+    }
+
+    /* Header fijo, transparente */
+    #ranking thead th {
+        position: sticky;
+        top: 0;
+        /* pegado al tope del viewport */
+        z-index: 2;
+        background: transparent !important;
+        box-shadow: none !important;
+        overflow: visible;
+        /* evita recortes raros */
+    }
+
+    /* Línea inferior del header: las filas “desaparecen” justo aquí */
+    #ranking thead th::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -1px;
+        height: 1px;
+        background: rgba(255, 255, 255, .25);
+        pointer-events: none;
+    }
+
+    /* Safari/WebKit: a veces pega mejor en el <tr> */
+    #ranking thead tr {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+    }
+
+    /* IMPORTANTE: que NINGÚN ancestro del thead tenga transform o overflow que lo rompa */
+    .page-scroll,
+    main,
+    .content-wrapper {
+        overflow: visible !important;
+    }
+
+    /* si antes les pusiste overflow */
+    /* Oculta visualmente el THEAD real pero conserva estructura para ancho de columnas */
+    #ranking thead {
+        visibility: hidden;
+        /* no se ve */
+        height: 0;
+        /* no ocupa alto */
+        pointer-events: none;
+        /* ignora eventos */
+    }
+
+    /* El scroll sigue sucediendo en .table-viewport */
+    .table-viewport {
+        position: relative;
+        overflow-y: auto;
+        overflow-x: auto;
+    }
+
+    /* Encabezado falso fijo, transparente, con línea inferior */
+    .rank-head {
+        position: sticky !important;
+        top: 0;
+        /* pegado al tope DEL SCROLLER (.table-viewport) */
+        z-index: 3;
+        display: grid;
+        /* Ajusta estos anchos para calzar con tus columnas reales */
+        grid-template-columns: 12% 38% 10% 20% 20%;
+        align-items: center;
+        gap: 0;
+        padding: 12px 15px 10px;
+        /* mismo padding que th/td */
+        color: #fff;
+        background: transparent;
+        /* se ve el video */
+        border-bottom: 1px solid rgba(255, 255, 255, .25);
+        pointer-events: none;
+        /* no bloquea scroll ni clics en filas */
+    }
+
+    /* Tipografía como tus TH */
+    .rank-head .cell {
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    /* Si ocultas la columna 3 en tu tabla, haz que el header falso coincida */
+    @media (min-width: 0px) {
+        /* ejemplo: si sigues ocultando la 3ª col en #ranking, ocúltala también aquí */
+        /* .rank-head .c3 { display:none; } */
+    }
+
+    /* Móvil 9:16 — usa los mismos repartos que tenías para TH */
+    @media (max-aspect-ratio: 9/16),
+    (orientation:portrait) and (max-width:480px) {
+        .rank-head {
+            grid-template-columns: 12% 38% 14% 10% 26%;
+            /* calza con tus reglas móviles */
+            font-size: .78rem;
+            letter-spacing: .3px;
+            padding: 6px 8px 6px;
+        }
+    }
+
+    .table-viewport {
+        max-height: 500px;
+        /* o lo que uses */
+        overflow-y: auto;
+        /* aquí está el scroll */
+        position: relative;
+    }
+
+    /* Header falso sticky dentro del viewport */
+    .rank-head {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        display: grid;
+        grid-template-columns: 100% 38% 10% 20% 20%;
+        /* ajusta a tus columnas */
+        background: transparent;
+        color: #fff;
+        border-bottom: 1px solid rgba(255, 255, 255, .25);
+        padding: 10px 15px;
+    }
+
+    /* Celditas */
+    .rank-head .cell {
+        font-weight: 600;
+        text-align: center;
+    }
+
+    /* ======= Overlay de encabezado fijo (NO cambia medidas/posiciones) ======= */
+    /* Altura del header overlay (ajústala si tu tipografía/padding varía) */
+    :root {
+        --rh-h: 48px;
+    }
+
+    /* El bloque .rank-head se dibuja por encima, sin empujar layout */
+    .rank-head {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: var(--rh-h);
+        z-index: 3;
+        /* por encima de las filas */
+        background: transparent;
+        /* sigue viéndose el fondo/video */
+        pointer-events: none;
+        /* no bloquea clics en las filas */
+    }
+
+    /* Fila/títulos dentro del overlay */
+    .rank-head .rh-row {
+        display: grid;
+        /* usa tu misma distribución de columnas para calzar 1:1 */
+        grid-template-columns: 11% 36% 8% 25% 15%;
+        align-items: center;
+        height: 100%;
+        padding: 0 8px;
+        font-size: 14px;
+        letter-spacing: 1px;
+        color: #fff;
+        position: relative;
+    }
+
+    /* Línea inferior fija: las filas “desaparecen” justo aquí */
+    /* Alineaciones (opcional) */
+    .rh-col {
+        text-align: center;
+    }
+
+    .rh-pos {
+        text-align: center;
+    }
+
+    .rh-name {
+        text-align: center;
+    }
+
+    .rh-rpm {
+        text-align: center;
+    }
+
+    .rh-cat {
+        text-align: center;
+    }
+
+    .rh-act {
+        text-align: center;
+    }
+
+    /* ===== Apagar visualmente SOLO el thead de la tabla overlay ===== */
+    /* Scoped por aria-labelledby="rank-head" para no tocar otras tablas */
+    table[aria-labelledby="rank-head"] thead th {
+        color: transparent !important;
+        background: transparent !important;
+        border-color: transparent !important;
+        /* mantenemos su altura para no alterar medidas */
+    }
+
+    /* IMPORTANTE: no movemos ni el contenedor ni su overflow vertical. Si tu scroll ya está en .table-viewport, lo dejamos tal cual. Si no tienes .table-viewport, también funciona: el overlay se superpone y listo. */
+    /* (Opcional) Si ves que la primera fila roza el borde, puedes dibujar la misma línea en el tope del área scrolleable; esto no cambia tamaños. Descomenta si la quieres:*/
+    /* le-viewport::before{ content:""; position:sticky; top:0; display:block; height:0; border-bottom:1px solid rgba(255,255,255,.25); z-index:2; }.tab/* /* ======= SINGLE SCROLLER PARA LAS TABLAS (parche mínimo) ======= */
+    /* 1) Mata cualquier scroll vertical ascendente: página / contenedores padres */
+    html,
+    body {
+        overflow: hidden !important;
+    }
+
+    .page-scroll,
+    main,
+    .content-wrapper,
+    .content-area {
+        overflow-y: hidden !important;
+        overscroll-behavior: contain !important;
+        /* no cede el scroll al padre */
+        touch-action: pan-x !important;
+        /* iOS: evita que “herede” scroll vertical */
+    }
+
+    /* 2) El overlay del header de la tabla NO debe tener scroll ni capturar eventos */
+    .rank-head {
+        pointer-events: none;
+    }
+
+    /* 3A) Si usas .table-viewport dentro de .table-wrap (recomendado) */
+    .table-wrap {
+        /* mantengo tus size y posición tal cual; solo recorto hacia arriba */
+        overflow: hidden !important;
+        /* el scroll no vive aquí */
+        position: relative;
+    }
+
+    .table-viewport {
+        position: relative;
+        height: 100% !important;
+        /* ocupa todo el alto que ya le diste a .table-wrap */
+        max-height: 100% !important;
+        overflow-y: auto !important;
+        /* <- ÚNICO scroll vertical */
+        overflow-x: auto;
+        /* si te hace falta horizontal */
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        /* no entregar scroll al padre al llegar al final */
+    }
+
+    /* 3B) Si NO tienes .table-viewport y el scroll va en .table-wrap, usa esto en su lugar:*/
+    .table-wrap {
+        overflow-y: auto !important;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+    }
+
+    /* 4) Thead real transparente (para que las filas “desaparezcan” justo bajo la línea) */
+    table[aria-labelledby="rank-head"] thead th {
+        color: transparent !important;
+        background: transparent !important;
+        border-color: transparent !important;
+    }
+
+    /* 5) Header fijo transparente + línea inferior (ya lo tienes, lo mantengo) */
+    #ranking {
+        border-collapse: separate !important;
+        border-spacing: 0;
+    }
+
+    #ranking thead th {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    #ranking thead th::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -1px;
+        height: 1px;
+        background: rgba(255, 255, 255, .25);
+        pointer-events: none;
+    }
+
+    /* 6) Extra anti-“rebote” al llegar arriba/abajo en móviles */
+    .table-viewport::-webkit-scrollbar-thumb {
+        background-clip: padding-box;
+    }
+
+    .table-wrap #dos {
+        position: absolute !important;
+        left: 15px !important;
+        top: 264px !important;
+        width: 320px !important;
+        height: 420px !important;
+    }
+
+    .table-viewport {
+        height: 100%;
+        overflow-y: auto;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        /* “sube” el contenido para que quede oculto arriba */
+        margin-top: -172px !important;
+        /* recorta 30px por arriba */
+        padding-top: 30px;
+        /* compensas para que no tape la primera fila */
+    }
+
+    .rh-row {
+        top: 20px !important;
+    }
+
+    .table-search-box input {
+        width: 35%;
+        height: 2px;
+        padding: 12px 40px 10px 6px;
+        border-radius: 5px;
+        border: 1px solid rgba(255, 255, 255, .25);
+        background: rgba(255, 255, 255, .1);
+        /* transparente inicial */
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        color: #fff;
+        font-size: 16px;
+        outline: none;
+        transition: background .25s ease, color .25s ease, border-color .25s ease;
+        position: absolute;
+        top: 190px;
+        left: 190px;
+        z-index: 5000;
+    }
+
+    .table-search-box input::placeholder {
+        color: rgba(255, 255, 255, .6);
+    }
+
+    /* Cambia a blanco SOLO en foco o cuando tenga texto */
+    .table-search-box input:focus,
+    .table-search-box input.has-text {
+        background: #fff !important;
+        color: #111 !important;
+        border-color: #4ac999;
+    }
+
+    .table-search-box input:focus::placeholder,
+    .table-search-box input.has-text::placeholder {
+        color: #666 !important;
+    }
+
+    /* Base: los gradientes hasta top 10 (ya lo tienes definido) */
+    /* Después del top 10 → sin color (o fondo oscuro) */
+    #ranking td.pos-grad:not(.pos-1):not(.pos-2):not(.pos-3):not(.pos-4):not(.pos-5):not(.pos-6):not(.pos-7):not(.pos-8):not(.pos-9):not(.pos-10)::before {
+        background: #11111136 !important;
+        /* o #000 si prefieres más fuerte */
+        background-image: none !important;
+        /* evita la transparencia verde */
+    }
+
+    /* Celda de nombre: nombre arriba, apellido abajo */
+    #ranking td:nth-child(2) {
+        white-space: normal !important;
+        /* permite varias líneas */
+        overflow: visible !important;
+        /* no recorta */
+        text-overflow: clip !important;
+        /* sin puntos suspensivos */
+        word-break: keep-all !important;
+        /* no parte las palabras */
+        overflow-wrap: break-word !important;
+        /* pero sí permite salto en espacios */
+        line-height: 1.2 !important;
+        text-align: left;
+        /* opcional: alinear a la izquierda */
+    }
+
+    /* Opcional: fuerza a que nombre/apellido vayan en dos líneas */
+    #ranking td:nth-child(2) .name {
+        display: block;
+        white-space: normal !important;
+        overflow: visible !important;
+        word-break: keep-all !important;
+    }
+
+    /* Celda de nombre: partir en dos líneas centradas */
+    #ranking td:nth-child(2) {
+        white-space: normal !important;
+        /* permite salto de línea */
+        overflow: visible !important;
+        /* no recorta */
+        text-overflow: clip !important;
+        /* sin puntos suspensivos */
+        word-break: keep-all !important;
+        /* no cortar palabras */
+        overflow-wrap: break-word !important;
+        /* salto en espacios */
+        line-height: 1.3 !important;
+        text-align: center !important;
+        /* centra el texto */
+        vertical-align: middle !important;
+        /* centra en vertical */
+    }
+
+    /* El contenido dentro de la celda (ej. span.name) */
+    #ranking td:nth-child(2) .name {
+        display: flex !important;
+        flex-direction: column !important;
+        /* uno arriba del otro */
+        align-items: center !important;
+        /* centrado horizontal */
+        justify-content: center !important;
+        /* centrado vertical */
+        white-space: normal !important;
+    }
+
+    .sidebar-footer {
+        margin-top: auto;
+        /* lo empuja al fondo del sidebar */
+        padding: 12px 16px;
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.6);
+        text-align: left;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+
+    .main-nav {
+        position: fixed;
+        top: 6px;
+        left: 90px;
+        display: flex;
+        gap: 10px;
+        z-index: 1001
+    }
+
+    .nav-btn {
+        padding: 6px 12px;
+        border-radius: 9999px;
+        background: rgba(255, 255, 255, .15);
+        border: 1px solid rgba(255, 255, 255, .25);
+        color: #fff;
+        text-decoration: none;
+        font-weight: 800;
+        letter-spacing: .2px;
+        cursor: pointer;
+        transition: .15s
+    }
+
+    .nav-btn:hover {
+        transform: translateY(-1px);
+        background: rgba(255, 255, 255, .22)
+    }
+
+    /* Sidebar izquierdo */
+    .lbackdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, .45);
+        opacity: 0;
+        pointer-events: none;
+        transition: .2s;
+        z-index: 1001
+    }
+
+    .lbackdrop.open {
+        opacity: 1;
+        pointer-events: auto
+    }
+
+    .lside {
+        position: fixed;
+        top: 57px;
+        left: 0;
+        height: calc(100% - 57px);
+        width: min(92vw, 320px);
+        background: rgba(7, 34, 55, 0);
+        /* un azul oscuro con 65% opacidad */
+        backdrop-filter: blur(10px);
+        /* desenfoque del contenido detrás */
+        -webkit-backdrop-filter: blur(10px);
+        border-right: 1px solid rgba(255, 255, 255, .2);
+        transform: translateX(-100%);
+        transition: .25s;
+        z-index: 5002;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        top: 61px;
+    }
+
+    .lside.open {
+        transform: translateX(0)
+    }
+
+    .lside-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, .15)
+    }
+
+    .lside-body {
+        padding: 14px;
+        overflow: auto
+    }
+
+    .rank-list {
+        display: grid;
+        gap: 10px
+    }
+
+    .rank-chip {
+        display: block;
+        text-align: left;
+        padding: 12px 14px;
+        border-radius: 14px;
+        font-weight: 900;
+        letter-spacing: .2px;
+        text-decoration: none;
+        border: 1px solid rgba(255, 255, 255, .25);
+        transition: .15s
+    }
+
+    .rank-chip.active {
+        background: #4ac999;
+        color: #000;
+        border-color: #bff1df;
+        box-shadow: 0 8px 22px rgba(0, 0, 0, .35), 0 0 0 2px rgba(74, 201, 153, .35) inset
+    }
+
+    .rank-chip.inactive {
+        background: #fff;
+        color: #0a2237;
+        border-color: rgba(255, 255, 255, .75)
+    }
+
+    .rank-chip.inactive:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 18px rgba(0, 0, 0, .25)
+    }
+
+    /* Botón Categorías (header derecho) */
+    .rcat-nav {
+        position: fixed;
+        top: 10px;
+        right: 12px;
+        z-index: 1005
+    }
+
+    .rcat-btn {
+        padding: 8px 12px;
+        border-radius: 9999px;
+        border: 1px solid rgba(255, 255, 255, .25);
+        background: rgba(255, 255, 255, .15);
+        color: #fff;
+        font-weight: 800;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer
+    }
+
+    .rcat-btn:hover {
+        background: rgba(255, 255, 255, .22)
+    }
+
+    /* Sidebar derecho categorías */
+    .rbackdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, .45);
+        opacity: 0;
+        pointer-events: none;
+        transition: .2s;
+        z-index: 1003
+    }
+
+    .rbackdrop.open {
+        opacity: 1;
+        pointer-events: auto
+    }
+
+    .rside {
+        position: fixed;
+        top: 57px;
+        right: 0;
+        height: calc(100% - 57px);
+        width: min(92vw, 320px);
+        background: rgba(0, 53, 73, .96);
+        border-left: 1px solid rgba(255, 255, 255, .2);
+        transform: translateX(100%);
+        transition: .25s;
+        z-index: 1004;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        color: #fff
+    }
+
+    .rside.open {
+        transform: translateX(0)
+    }
+
+    .rside-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, .15)
+    }
+
+    .rside-body {
+        padding: 14px;
+        overflow: auto
+    }
+
+    .cat-list {
+        display: grid;
+        gap: 10px
+    }
+
+    .cat-chip {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: #fff;
+        color: #0a2237;
+        border: 1px solid rgba(255, 255, 255, .25);
+        font-weight: 900;
+        letter-spacing: .2px;
+        transition: .15s
+    }
+
+    .cat-chip:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 18px rgba(0, 0, 0, .25)
+    }
+
+    .cat-chip.active {
+        background: #4ac999;
+        color: #000;
+        border-color: #bff1df;
+        box-shadow: 0 8px 22px rgba(0, 0, 0, .35), 0 0 0 2px rgba(74, 201, 153, .35) inset
+    }
+
+    .cat-chip img {
+        width: 22px;
+        height: 22px;
+        object-fit: contain
+    }
+
+    /* Tabla + búsqueda */
+    .toolbar {
+        width: min(100%, 1100px);
+        margin: 80px auto 8px;
+        display: flex;
+        justify-content: flex-end;
+        padding: 0 8px
+    }
+
+    .rank-search {
+        position: relative;
+    }
+
+    .rank-search input {
+        background: rgba(255, 255, 255, .14);
+        border: 1px solid rgba(255, 255, 255, .28);
+        color: #fff;
+        border-radius: 12px;
+        padding: 8px 12px;
+        min-width: 220px;
+        outline: none
+    }
+
+    .rank-search input::placeholder {
+        color: rgba(255, 255, 255, .8)
+    }
+
+    .table-wrap {
+        width: min(100%, 1100px);
+        margin: 6px auto 20px;
+        overflow-x: auto
+    }
+
+    #ranking {
+        width: 100%
+    }
+
+    td.act {
+        text-align: center;
+        width: 56px
+    }
+
+    td.act .arrow-up,
+    td.act .arrow-down,
+    td.act .arrow-right {
+        font-size: 16px;
+        display: inline-block;
+        line-height: 1
+    }
+
+    @media (max-width:600px) {
+        .main-nav {
+            left: 70px;
+            gap: 6px
+        }
+
+        .nav-btn {
+            padding: 6px 10px;
+            font-size: .9rem
+        }
+
+        .toolbar {
+            justify-content: center;
+            margin: 74px auto 6px
+        }
+
+        .rank-search input {
+            min-width: 180px
+        }
+    }
+
+    .main-nav {
+        position: fixed;
+        top: 6px;
+        left: 90px;
+        display: flex;
+        gap: 10px;
+        z-index: 1001
+    }
+
+    .nav-btn {
+        padding: 6px 12px;
+        border-radius: 9999px;
+        background: rgba(255, 255, 255, .15);
+        border: 1px solid rgba(255, 255, 255, .25);
+        color: #fff;
+        text-decoration: none;
+        font-weight: 800;
+        letter-spacing: .2px;
+        cursor: pointer;
+        transition: .15s
+    }
+
+    .nav-btn:hover {
+        transform: translateY(-1px);
+        background: rgba(255, 255, 255, .22)
+    }
+
+    /* Sidebar izquierdo */
+    .lbackdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, .45);
+        opacity: 0;
+        pointer-events: none;
+        transition: .2s;
+        z-index: 1001
+    }
+
+    .lbackdrop.open {
+        opacity: 1;
+        pointer-events: auto
+    }
+
+    .lside {
+        position: fixed;
+        top: 57px;
+        left: 0;
+        height: calc(100% - 57px);
+        width: min(92vw, 320px);
+        background: rgba(7, 34, 55, 0);
+        /* un azul oscuro con 65% opacidad */
+        backdrop-filter: blur(10px);
+        /* desenfoque del contenido detrás */
+        -webkit-backdrop-filter: blur(10px);
+        border-right: 1px solid rgba(255, 255, 255, .2);
+        transform: translateX(-100%);
+        transition: .25s;
+        z-index: 5002;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        top: 61px;
+    }
+
+    .lside.open {
+        transform: translateX(0)
+    }
+
+    .lside-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, .15)
+    }
+
+    .lside-body {
+        padding: 14px;
+        overflow: auto
+    }
+
+    .rank-list {
+        display: grid;
+        gap: 10px
+    }
+
+    .rank-chip {
+        display: block;
+        text-align: left;
+        padding: 12px 14px;
+        border-radius: 14px;
+        font-weight: 900;
+        letter-spacing: .2px;
+        text-decoration: none;
+        border: 1px solid rgba(255, 255, 255, .25);
+        transition: .15s
+    }
+
+    .rank-chip.active {
+        background: #4ac999;
+        color: #000;
+        border-color: #bff1df;
+        box-shadow: 0 8px 22px rgba(0, 0, 0, .35), 0 0 0 2px rgba(74, 201, 153, .35) inset
+    }
+
+    .rank-chip.inactive {
+        background: #fff;
+        color: #0a2237;
+        border-color: rgba(255, 255, 255, .75)
+    }
+
+    .rank-chip.inactive:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 18px rgba(0, 0, 0, .25)
+    }
+
+    /* Botón Categorías (header derecho) */
+    .rcat-nav {
+        position: fixed;
+        top: 10px;
+        right: 12px;
+        z-index: 1005
+    }
+
+    .rcat-btn {
+        padding: 8px 12px;
+        border-radius: 9999px;
+        border: 1px solid rgba(255, 255, 255, .25);
+        background: rgba(255, 255, 255, .15);
+        color: #fff;
+        font-weight: 800;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer
+    }
+
+    .rcat-btn:hover {
+        background: rgba(255, 255, 255, .22)
+    }
+
+    /* Sidebar derecho categorías */
+    .rbackdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, .45);
+        opacity: 0;
+        pointer-events: none;
+        transition: .2s;
+        z-index: 1003
+    }
+
+    .rbackdrop.open {
+        opacity: 1;
+        pointer-events: auto
+    }
+
+    .rside {
+        position: fixed;
+        top: 57px;
+        right: 0;
+        height: calc(100% - 57px);
+        width: min(92vw, 320px);
+        background: rgba(0, 53, 73, .96);
+        border-left: 1px solid rgba(255, 255, 255, .2);
+        transform: translateX(100%);
+        transition: .25s;
+        z-index: 1004;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        color: #fff
+    }
+
+    .rside.open {
+        transform: translateX(0)
+    }
+
+    .rside-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, .15)
+    }
+
+    .rside-body {
+        padding: 14px;
+        overflow: auto
+    }
+
+    .cat-list {
+        display: grid;
+        gap: 10px
+    }
+
+    .cat-chip {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: #fff;
+        color: #0a2237;
+        border: 1px solid rgba(255, 255, 255, .25);
+        font-weight: 900;
+        letter-spacing: .2px;
+        transition: .15s
+    }
+
+    .cat-chip:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 18px rgba(0, 0, 0, .25)
+    }
+
+    .cat-chip.active {
+        background: #4ac999;
+        color: #000;
+        border-color: #bff1df;
+        box-shadow: 0 8px 22px rgba(0, 0, 0, .35), 0 0 0 2px rgba(74, 201, 153, .35) inset
+    }
+
+    .cat-chip img {
+        width: 22px;
+        height: 22px;
+        object-fit: contain
+    }
+
+    /* Tabla + búsqueda */
+    .toolbar {
+        width: min(100%, 1100px);
+        margin: 80px auto 8px;
+        display: flex;
+        justify-content: flex-end;
+        padding: 0 8px
+    }
+
+    .rank-search {
+        position: relative;
+    }
+
+    .rank-search input {
+        background: rgba(255, 255, 255, .14);
+        border: 1px solid rgba(255, 255, 255, .28);
+        color: #fff;
+        border-radius: 12px;
+        padding: 8px 12px;
+        min-width: 220px;
+        outline: none
+    }
+
+    .rank-search input::placeholder {
+        color: rgba(255, 255, 255, .8)
+    }
+
+    .table-wrap {
+        width: min(100%, 1100px);
+        margin: 6px auto 20px;
+        overflow-x: auto
+    }
+
+    #ranking {
+        width: 100%
+    }
+
+    td.act {
+        text-align: center;
+        width: 56px
+    }
+
+    td.act .arrow-up,
+    td.act .arrow-down,
+    td.act .arrow-right {
+        font-size: 16px;
+        display: inline-block;
+        line-height: 1
+    }
+
+    @media (max-width:600px) {
+        .main-nav {
+            left: 120px!important;
+            gap: 6px
+        }
+
+        .nav-btn {
+            padding: 6px 10px;
+            font-size: .9rem
+        }
+
+        .toolbar {
+            justify-content: center;
+            margin: 74px auto 6px
+        }
+
+        .rank-search input {
+            min-width: 180px
+        }
+    }
+}
