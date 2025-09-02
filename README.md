@@ -1,2 +1,0 @@
-# RPM.
-Ranking Padél Montería
